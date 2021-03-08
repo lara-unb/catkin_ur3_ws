@@ -4,6 +4,31 @@ bin-release/
 [Oo]bj/
 [Bb]in/
 
+# Node artifact files
+node_modules/
+dist/
+
+# compiled folders
+.catkin_tools/
+/logs
+build/
+devel/
+*/.vscode/*
+.vscode/
+
+# Compiled Java class files
+*.class
+
+# Compiled Python bytecode
+*.py[cod]
+
+# Log files
+*.log
+
+# Package files
+*.jar
+
+
 # Other files and folders
 .settings/
 
