@@ -1,0 +1,15 @@
+# OrderService Request
+Order order         # The order to be called
+string[] id_list     # Order ID List. If length > 0 length must be equal to ntimes and aoms will use it, if it is empty, aoms will generate the ids
+string[] assignment_id_list # Assignment ID List
+int32 ntimes        # Number of times to repeat the order
+
+---
+# OrderService Reponse
+int8 response       # Returns if the request was successfull
+string message      # Reponse Message
+string[] id_list     # Order ID List with length equals to ntimes - used to track the order and cancel it
+string[] assignment_id_list # Assignment ID List
+
+int8 FAILURE = -1   # response value if the request failure
+int8 SUCCESS =  1   # response value if the request is successfull

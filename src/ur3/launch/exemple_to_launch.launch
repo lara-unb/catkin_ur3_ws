@@ -1,0 +1,10 @@
+ <!-- This is a exemple: It's not run! -->
+<launch>
+    
+  <node pkg="pkg_name" name="rename_node" type="executable" output = 'screen'>
+    
+    <rosparam command="load" file="$(find pkg)/config/yaml_file.yaml" />      
+    
+  </node>
+
+</launch>
