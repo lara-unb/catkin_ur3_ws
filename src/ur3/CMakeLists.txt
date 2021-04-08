@@ -4,6 +4,11 @@ project(ur3)
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
 
+
+
+
+
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -11,6 +16,10 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  message_generation
+  control_msgs
+  geometry_msgs
+  
 )
 
 ## System dependencies are found with CMake's conventions
@@ -47,11 +56,12 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+   FILES
+   ref_msg.msg
+   gripper_msg.msg
+   end_Effector_msg.msg
+ )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -68,10 +78,14 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+#quando for criar uma nova mensagem
+ generate_messages(
+   DEPENDENCIES
+   std_msgs 
+   control_msgs
+   geometry_msgs
+   
+  )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -103,10 +117,11 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES ur3
-#  CATKIN_DEPENDS roscpp rospy std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include msg
+  LIBRARIES ur3 
+  CATKIN_DEPENDS message_runtime
+  CATKIN_DEPENDS roscpp rospy std_msgs control_msgs geometry_msgs 
+  DEPENDS system_lib
 )
 
 ###########
@@ -116,7 +131,8 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include/ur3
+  msg
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -164,18 +180,11 @@ include_directories(
 #   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 
-## Mark executables for installation
-## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-# install(TARGETS ${PROJECT_NAME}_node
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
-
-## Mark libraries for installation
-## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
-# install(TARGETS ${PROJECT_NAME}
+## Mark executables and/or libraries for installation
+# install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 
 ## Mark cpp header files for installation
@@ -205,10 +214,25 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(talker src/talker.cpp)
-target_link_libraries(talker ${catkin_LIBRARIES})
+
+add_library(open_socket SHARED src/open_socket.cpp include/ur3/open_socket.h)
+add_library(send_script SHARED src/send_script.cpp include/ur3/send_script.h)
 
 
-add_executable(listener src/listener.cpp)
-target_link_libraries(listener ${catkin_LIBRARIES})
+add_library(read_data SHARED src/read_data.cpp include/ur3/read_data.h)
 
+install(TARGETS open_socket DESTINATION lib)
+install(FILES src/open_socket.h DESTINATION include)
+
+install(TARGETS send_script DESTINATION lib)
+install(FILES src/send_script.h DESTINATION include)
+
+
+
+
+
+install(TARGETS read_data DESTINATION lib)
+install(FILES src/read_data.h DESTINATION include)
+
+add_executable(interface src/interface.cpp src/open_socket.cpp src/send_script.cpp src/read_data.cpp)
+target_link_libraries(interface open_socket send_script read_data ${catkin_LIBRARIES})
