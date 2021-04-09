@@ -1,3 +1,4 @@
+#include "ros/ros.h"
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -6,7 +7,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <ctime>
 #include <errno.h>
 #include <arpa/inet.h>
 
@@ -33,7 +33,6 @@ int send_script(){
     }
 
 
-        
     //printf("Waiting 5 secods ...");
     // resetar o robô
     FILE *fp1 = fopen("prog_reset.script", "rb");
@@ -50,7 +49,7 @@ int send_script(){
     fclose(fp1);
     
     sleep(5);
-    // mada o arquivo que será esxecutado
+    // manda o arquivo que será esxecutado
     FILE *fp = fopen("ur3_arm.script", "rb");
     if(fp == NULL){
         perror("File");
