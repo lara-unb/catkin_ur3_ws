@@ -52,7 +52,7 @@ class Interface{
 			arm_pub_ = node.advertise<sensor_msgs::JointState>("~arm",10);
 			end_Effector_pub_ = node.advertise<ur3::end_Effector_msg>("~end_effector",10);
 			
-			l_timer_ = class_node_.createTimer(ros::Duration(RATE_LOOP), boost::bind(&Interface::arm_pub_state, this));
+			l_timer_ = class_node_.createTimer(ros::Duration(RATE_LOOP), &Interface::arm_pub_state, this);
 			sub_ref_vel_ = node.subscribe("~ref_vel", 10, &Interface::ref_vel_Callback, this);
 
 			arm.header.frame_id = " ";
@@ -87,7 +87,7 @@ class Interface{
 		n[2] = ( ((n[2] & 0x000000FF)<<24) + ((n[2] & 0x0000FF00)<<8) + ((n[2] & 0x00FF0000)>>8) + (( n[2] & 0xFF000000)>>24) );
 	}
 
-	void arm_pub_state(){
+	void arm_pub_state(const ros::TimerEvent& event){
 
 		b = recv(new_socket_, &buffer_out, 156, 0);
 		///////////////////////////////////////////////////////////
