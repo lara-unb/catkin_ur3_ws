@@ -1,0 +1,10 @@
+ <!-- This is a exemple: It's not run! -->
+<launch>
+    
+  <node pkg="ur3" name="ur3" type="interface" output = 'screen'>>
+
+    <rosparam command="load" file="$(find ur3)/config/setup.yaml" />
+          
+  </node>
+
+</launch>

@@ -3,7 +3,6 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -11,7 +10,14 @@
 #include <arpa/inet.h>
 
 int send_script(){
-
+    std::string robot_ip;
+    int robot_port;
+    ros::param::get("~robot_ip", robot_ip);
+    ros::param::get("~robot_port", robot_port);
+    
+    ROS_WARN("%s",("ur3 is setted in ip " + robot_ip).c_str());
+    ROS_WARN("%s",("ur3 is setted in port " + std::to_string(robot_port)).c_str());
+  
     int sfd =0, n=0, b;
     char rbuff[256];
     char sendbuffer[256];
@@ -22,9 +28,8 @@ int send_script(){
     sfd = socket(AF_INET, SOCK_STREAM, 0);
 
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(30002);
-    serv_addr.sin_addr.s_addr = inet_addr("192.168.1.56"); // real
-    // serv_addr.sin_addr.s_addr = inet_addr("0.0.0.0"); // simulador 
+    serv_addr.sin_port = htons(robot_port);
+    serv_addr.sin_addr.s_addr = inet_addr(robot_ip.c_str()); // real 
 
     b=connect(sfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
     if (b==-1) {

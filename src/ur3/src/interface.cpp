@@ -227,8 +227,11 @@ class Interface{
 
 };
 
-int main(int argc, char **argv){ 	
+int main(int argc, char **argv){ 
+		
 	ROS_WARN("Init Interface ur3");
+	ros::init(argc, argv, "ur3");
+	ros::NodeHandle node;
 	// primeira coisa:
 	// tem que enviar o arquivo urscript
 	ROS_WARN("Wainting for ur3 response ...");
@@ -237,8 +240,6 @@ int main(int argc, char **argv){
 	int new_socket = open_socket();
 	// abrindo a comunicaçção tcp socket
 	//ROS
-	ros::init(argc, argv, "ur3");	
-	ros::NodeHandle node;
 	Interface interface(node);
 
   	ROS_INFO("ur3 node is running");
