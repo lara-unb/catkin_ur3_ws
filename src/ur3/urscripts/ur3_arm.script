@@ -132,7 +132,7 @@ def unnamed():
 
   set_tool_voltage(24)
   set_tcp(p[0,-0,0.18659,0,-0,0])
-  HOSTNAME = "192.168.1.62" # real
+  HOSTNAME = "192.168.1.59" # real
   #HOSTNAME = "0.0.0.0" # simulador 
   PORT = 60200
   pi = 3.14159265359
@@ -248,8 +248,8 @@ def unnamed():
 	
 	while True:
 		#speedj([velocity[1]/4,velocity[1]/4,velocity[1]/4,velocity[1]/4,velocity[1]/4,velocity[1]/4], 50, 0.0001)
-		#speedj([0,0,0,0,0,1], 2, 0.0001)
-		speedj([velocity[1],velocity[2],velocity[3],velocity[4],velocity[5],velocity[6]], 3, 0.0001)	
+		speedj([0,0,0,0,0,0.1], 2, 0.0001)
+		#speedj([velocity[1],velocity[2],velocity[3],velocity[4],velocity[5],velocity[6]], 3, 0.0001)	
 		#sync()
 	end
 end

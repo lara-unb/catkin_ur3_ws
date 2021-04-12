@@ -1,4 +1,5 @@
 #include "ros/ros.h"
+#include <ros/package.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -11,7 +12,11 @@
 
 int send_script(){
     std::string robot_ip;
+    std::string path_ur3_reset;
+    std::string path_ur3_arm;
     int robot_port;
+    std::string path_ur3 = ros::package::getPath("ur3");
+
     ros::param::get("~robot_ip", robot_ip);
     ros::param::get("~robot_port", robot_port);
     
@@ -29,20 +34,22 @@ int send_script(){
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(robot_port);
-    serv_addr.sin_addr.s_addr = inet_addr(robot_ip.c_str()); // real 
+    serv_addr.sin_addr.s_addr = inet_addr(robot_ip.c_str()); // real
 
     b=connect(sfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
+    
     if (b==-1) {
-        perror("Connect");
+        perror("Connect ur3");
         return 1;
     }
 
 
     //printf("Waiting 5 secods ...");
     // resetar o robô
-    FILE *fp1 = fopen("prog_reset.script", "rb");
+    path_ur3_reset = path_ur3 + "/urscripts/prog_reset.script";
+    FILE *fp1 = fopen(path_ur3_reset.c_str(), "rb");
     if(fp1 == NULL){
-        perror("File");
+        perror("File reset");
         return 2;
     }
 
@@ -55,9 +62,11 @@ int send_script(){
     
     sleep(5);
     // manda o arquivo que será esxecutado
-    FILE *fp = fopen("ur3_arm.script", "rb");
+    path_ur3_arm = path_ur3 + "/urscripts/ur3_arm.script";
+
+    FILE *fp = fopen(path_ur3_arm.c_str(), "rb");
     if(fp == NULL){
-        perror("File");
+        perror("File ur3_arm ");
         return 2;
     }
 

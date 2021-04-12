@@ -1,7 +1,7 @@
 # Parameters to manual roll and pitch calibration
 
 robot_ip: '192.168.1.56'
-robot_port: 3002
+robot_port: 30002
 
 max_ref_vel:
   joint_0: 2.0

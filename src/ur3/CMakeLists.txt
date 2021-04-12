@@ -19,6 +19,9 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   control_msgs
   geometry_msgs
+  roscpp
+  sensor_msgs
+  rosbag
   
 )
 

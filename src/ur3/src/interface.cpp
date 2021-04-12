@@ -47,13 +47,14 @@ class Interface{
 			class_node_ = node;
 			std::cout << "init Interface" << std::endl;
 
+			send_script(); 
 			new_socket_ = open_socket();
 
-			arm_pub_ = node.advertise<sensor_msgs::JointState>("~arm",10);
-			end_Effector_pub_ = node.advertise<ur3::end_Effector_msg>("~end_effector",10);
+			arm_pub_ = class_node_.advertise<sensor_msgs::JointState>("arm",10);
+			end_Effector_pub_ = class_node_.advertise<ur3::end_Effector_msg>("end_effector",10);
 			
 			l_timer_ = class_node_.createTimer(ros::Duration(RATE_LOOP), &Interface::arm_pub_state, this);
-			sub_ref_vel_ = node.subscribe("~ref_vel", 10, &Interface::ref_vel_Callback, this);
+			sub_ref_vel_ = class_node_.subscribe("ref_vel", 10, &Interface::ref_vel_Callback, this);
 
 			arm.header.frame_id = " ";
 			arm.name.resize(6);
@@ -66,6 +67,13 @@ class Interface{
 			arm.name[3] = "Wrist 1";
 			arm.name[4] = "Wrist 2";
 			arm.name[5] = "Wrist 3";
+
+			ref_vel_[0] = 0;
+			ref_vel_[1] = 0;
+			ref_vel_[2] = 0;
+			ref_vel_[3] = 0;
+			ref_vel_[4] = 0;
+			ref_vel_[5] = 0;
 			
 	};
 
@@ -88,6 +96,9 @@ class Interface{
 	}
 
 	void arm_pub_state(const ros::TimerEvent& event){
+
+		std::cout << "init Interface" << std::endl;
+
 
 		b = recv(new_socket_, &buffer_out, 156, 0);
 		///////////////////////////////////////////////////////////
@@ -231,13 +242,13 @@ int main(int argc, char **argv){
 		
 	ROS_WARN("Init Interface ur3");
 	ros::init(argc, argv, "ur3");
-	ros::NodeHandle node;
+	ros::NodeHandle node("~");
 	// primeira coisa:
 	// tem que enviar o arquivo urscript
 	ROS_WARN("Wainting for ur3 response ...");
-	send_script(); // a função send_script envia o arquivo para o robô
+	
 	ROS_WARN("Send script to ur3 ...");
-	int new_socket = open_socket();
+	// int new_socket = open_socket();
 	// abrindo a comunicaçção tcp socket
 	//ROS
 	Interface interface(node);
