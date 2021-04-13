@@ -1,14 +1,12 @@
-// Programa para teste na junta 5 do ur3////////////////////////////////
-//commando to setup joystick
-//rosparam set joy_node/dev "/dev/input/jsX" change X for your divice.
-//rosrun joy joy_node 
-//rostopic echo joy 
+
 ////////////////////////////////////////////////////////////////////////
 #include "ros/ros.h"
 #include "sensor_msgs/JointState.h"
 #include "ur3/end_Effector_msg.h"
 #include "ur3/ref_msg.h"
-#include "std_msgs/Float64.h"// lib demo_1
+#include "std_msgs/Float64.h"
+#include "std_msgs/Float64MultiArray.h"
+#include <vector>
 #include <sys/socket.h>
 #include <string.h>  
 #include "open_socket.h"
@@ -21,7 +19,9 @@ class Interface{
 	private:
 
 		int32_t buffer_in_[8];
-		float ref_vel_[10];
+		std::vector<double> ref_vel_;
+		std::vector<double> max_vel_;
+
 		ros::NodeHandle  class_node_;
 
 		ros::Publisher arm_pub_;
@@ -44,11 +44,15 @@ class Interface{
 
 		Interface(ros::NodeHandle &node){
 			
+			std::vector<double> ref_vel_(10, 0.0);
+			std::vector<double> max_vel_(6, 0.0);
+
 			class_node_ = node;
 			std::cout << "init Interface" << std::endl;
 
 			send_script(); 
 			new_socket_ = open_socket();
+
 
 			arm_pub_ = class_node_.advertise<sensor_msgs::JointState>("arm",10);
 			end_Effector_pub_ = class_node_.advertise<ur3::end_Effector_msg>("end_effector",10);
@@ -68,13 +72,13 @@ class Interface{
 			arm.name[4] = "Wrist 2";
 			arm.name[5] = "Wrist 3";
 
-			ref_vel_[0] = 0;
-			ref_vel_[1] = 0;
-			ref_vel_[2] = 0;
-			ref_vel_[3] = 0;
-			ref_vel_[4] = 0;
-			ref_vel_[5] = 0;
-			
+			ros::param::get("~max_ref_vel/joint_0", max_vel_[0]);
+			ros::param::get("~max_ref_vel/joint_1", max_vel_[1]);
+			ros::param::get("~max_ref_vel/joint_2", max_vel_[2]);
+			ros::param::get("~max_ref_vel/joint_3", max_vel_[3]);
+			ros::param::get("~max_ref_vel/joint_4", max_vel_[4]);
+			ros::param::get("~max_ref_vel/joint_5", max_vel_[5]);
+
 	};
 
 	void reverse_word(int32_t &num){
@@ -197,18 +201,25 @@ class Interface{
 
   	}
 
-	void ref_vel_Callback(const std_msgs::Float64::ConstPtr& ref_vel_sub){
+	void ref_vel_Callback(const std_msgs::Float64MultiArray::ConstPtr& ref_vel_sub){
 	
 		float norma_float = 1000000.0;
 
-		ref_vel_[0] = ref_vel_sub->data;
-		ref_vel_[1] = ref_vel_[0];
-		ref_vel_[2] = ref_vel_[0];
-		ref_vel_[3] = ref_vel_[0];
-		ref_vel_[4] = ref_vel_[0];
-		ref_vel_[5] = ref_vel_[0];
+		ref_vel_[0] = ref_vel_sub->data[0];
+		ref_vel_[1] = ref_vel_sub->data[1];
+		ref_vel_[2] = ref_vel_sub->data[2];
+		ref_vel_[3] = ref_vel_sub->data[3];
+		ref_vel_[4] = ref_vel_sub->data[4];
+		ref_vel_[5] = ref_vel_sub->data[5];
+
+		for (int i = 0; i < ref_vel_.size() - 4; ++i) {
+
+			if (ref_vel_[i] >= max_vel_[i]){
+				ref_vel_[i] = max_vel_[i];
+			}
+
+		}
 		
-	
 		buffer_in_[0] = (int)(ref_vel_[0]*norma_float);
 		reverse_word(buffer_in_[0]);
 		

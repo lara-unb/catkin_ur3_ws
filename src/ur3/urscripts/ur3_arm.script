@@ -145,9 +145,6 @@ def unnamed():
 			p_juntas = get_actual_joint_positions()
 			#t_juntas = get_joint_torques()
 			
-
-			
-
 			#signals output
 			socket_send_int(p_juntas[0]*1000000)
 			socket_send_int(v_juntas[0]*1000000)
