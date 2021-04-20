@@ -4,7 +4,7 @@ import rospkg
 import csv
 import os
 import numpy as np
-from std_srvs.srv import Trigger, TriggerResponse
+from std_srvs.srv import SetBool, SetBoolResponse
 from std_msgs.msg import Float64MultiArray
 
 
@@ -31,7 +31,7 @@ class IdentificationClass():
 
         self.start = False 
 
-        rospy.Service("~start", Trigger, self.start_iden)
+        rospy.Service("~start", SetBool, self.start_iden)
 
         self.ref_vel_pub = rospy.Publisher('ur3/ref_vel', Float64MultiArray, queue_size = 1)
 
@@ -39,14 +39,20 @@ class IdentificationClass():
 
     def start_iden(self, req):
 
-        self.start = True
-        return TriggerResponse(True, " Stratting identification")
+        if req.data == True:
+
+            self.start = True
+            return SetBoolResponse(True, " Stratting identification")
+        else:
+            self.start = False
+            return SetBoolResponse(True, " Strot identification")
+
 
     def loop_ref_vel(self, event):
         
         if self.start is True:
             
-            self.ref_vel_msg.data[0] =  self.data_from_csv['q6'][self.interator]
+            self.ref_vel_msg.data[5] =  self.data_from_csv['q6'][self.interator]
             self.ref_vel_pub.publish(self.ref_vel_msg)
 
             self.interator = self.interator + 1
@@ -60,7 +66,7 @@ class IdentificationClass():
     def read_data(self):
 
         data_from_csv = {}        
-        data_from_csv['q1'] = []
+        data_from_csv['q6'] = []
 
         rospack = rospkg.RosPack()
         path_to_csv_file = rospack.get_path('controller')
@@ -68,7 +74,7 @@ class IdentificationClass():
         with open(path_to_csv_file + '/csv/vel_ur3.csv', 'r') as file:
             reader = csv.reader(file)
             for row in reader:
-                data_from_csv['q1'].append(float(row[0]))
+                data_from_csv['q6'].append(float(row[0]))
 
         return data_from_csv
 

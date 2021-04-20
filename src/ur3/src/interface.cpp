@@ -19,8 +19,10 @@ class Interface{
 	private:
 
 		int32_t buffer_in_[8];
-		std::vector<double> ref_vel_;
-		std::vector<double> max_vel_;
+		// std::vector<double> ref_vel_;
+		// std::vector<double> max_vel_;
+		float ref_vel_[10];
+		float max_vel_[10];
 
 		ros::NodeHandle  class_node_;
 
@@ -43,9 +45,6 @@ class Interface{
 	public:
 
 		Interface(ros::NodeHandle &node){
-			
-			std::vector<double> ref_vel_(10, 0.0);
-			std::vector<double> max_vel_(6, 0.0);
 
 			class_node_ = node;
 			std::cout << "init Interface" << std::endl;
@@ -54,11 +53,12 @@ class Interface{
 			new_socket_ = open_socket();
 
 
-			arm_pub_ = class_node_.advertise<sensor_msgs::JointState>("arm",10);
-			end_Effector_pub_ = class_node_.advertise<ur3::end_Effector_msg>("end_effector",10);
+			arm_pub_ = class_node_.advertise<sensor_msgs::JointState>("ur3/arm",10);
+			end_Effector_pub_ = class_node_.advertise<ur3::end_Effector_msg>("ur3/end_effector",10);
 			
 			l_timer_ = class_node_.createTimer(ros::Duration(RATE_LOOP), &Interface::arm_pub_state, this);
-			sub_ref_vel_ = class_node_.subscribe("ref_vel", 10, &Interface::ref_vel_Callback, this);
+			sub_ref_vel_ = class_node_.subscribe("ur3/ref_vel", 100, &Interface::ref_vel_Callback, this);
+			
 
 			arm.header.frame_id = " ";
 			arm.name.resize(6);
@@ -78,6 +78,7 @@ class Interface{
 			ros::param::get("~max_ref_vel/joint_3", max_vel_[3]);
 			ros::param::get("~max_ref_vel/joint_4", max_vel_[4]);
 			ros::param::get("~max_ref_vel/joint_5", max_vel_[5]);
+
 
 	};
 
@@ -101,9 +102,6 @@ class Interface{
 
 	void arm_pub_state(const ros::TimerEvent& event){
 
-		std::cout << "init Interface" << std::endl;
-
-
 		b = recv(new_socket_, &buffer_out, 156, 0);
 		///////////////////////////////////////////////////////////
 		//beginning arm 
@@ -117,7 +115,7 @@ class Interface{
 		reverse(vector_arm);
 		arm.position[1] = ((float)vector_arm[0])/norma_float;
 		arm.velocity[1] = ((float)vector_arm[1])/norma_float;
-		arm.effort[1] = -0.013088*((float)vector_arm[2]); // 
+		arm.effort[1] = -0.013088*((float)vector_arm[2]); 
 		//////////////////////////////////////
 		memcpy(&vector_arm, &buffer_out[24], 3*sizeof(int32_t));
 		reverse(vector_arm);
@@ -191,8 +189,10 @@ class Interface{
 		memcpy(&vector_arm, &buffer_out[144], 3*sizeof(int32_t));
 		reverse(vector_arm);
 		end_effector.wrench.torque.x = ((float)vector_arm[0])/norma_float;
-		end_effector.wrench.torque.x = ((float)vector_arm[1])/norma_float;
+		end_effector.wrench.torque.y = ((float)vector_arm[1])/norma_float;
 		end_effector.wrench.torque.x = ((float)vector_arm[2])/norma_float;
+		////////////////////////////////////////
+
 		////////////////////////////////////////
 		arm.header.stamp = ros::Time::now();
 		end_effector.header.stamp = ros::Time::now();
@@ -202,9 +202,7 @@ class Interface{
   	}
 
 	void ref_vel_Callback(const std_msgs::Float64MultiArray::ConstPtr& ref_vel_sub){
-	
-		float norma_float = 1000000.0;
-
+		
 		ref_vel_[0] = ref_vel_sub->data[0];
 		ref_vel_[1] = ref_vel_sub->data[1];
 		ref_vel_[2] = ref_vel_sub->data[2];
@@ -212,7 +210,7 @@ class Interface{
 		ref_vel_[4] = ref_vel_sub->data[4];
 		ref_vel_[5] = ref_vel_sub->data[5];
 
-		for (int i = 0; i < ref_vel_.size() - 4; ++i) {
+		for (int i = 0; i < 6; ++i) {
 
 			if (ref_vel_[i] >= max_vel_[i]){
 				ref_vel_[i] = max_vel_[i];
@@ -253,7 +251,7 @@ int main(int argc, char **argv){
 		
 	ROS_WARN("Init Interface ur3");
 	ros::init(argc, argv, "ur3");
-	ros::NodeHandle node("~");
+	ros::NodeHandle node;
 	// primeira coisa:
 	// tem que enviar o arquivo urscript
 	ROS_WARN("Wainting for ur3 response ...");
