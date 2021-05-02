@@ -212,9 +212,14 @@ class Interface{
 
 		for (int i = 0; i < 6; ++i) {
 
-			if (ref_vel_[i] >= max_vel_[i]){
+			if (ref_vel_[i] > max_vel_[i]){
 				ref_vel_[i] = max_vel_[i];
 			}
+
+			if (ref_vel_[i] < 0 && abs(ref_vel_[i]) > max_vel_[i] ){
+				ref_vel_[i] = -max_vel_[i];
+			}
+
 
 		}
 		

@@ -1,16 +1,17 @@
 # Parameters to manual roll and pitch calibration
 
-# robot_ip: '192.168.1.56'
-robot_ip: '0.0.0.0'
-robot_port: 30002
+robot_ip: '192.168.1.56'
+# robot_ip: '0.0.0.0'
+# robot_port: 30002
+robot_port: 30003
 
 max_ref_vel:
-  joint_0: 2.0
-  joint_1: 2.0
-  joint_2: 2.0
-  joint_3: 2.0
-  joint_4: 2.0
-  joint_5: 2.0
+  joint_0: 1.5
+  joint_1: 1.5
+  joint_2: 1.5
+  joint_3: 1.5
+  joint_4: 1.5
+  joint_5: 1.5
 max_torque:
   joint_0: 2.0
   joint_1: 2.0
