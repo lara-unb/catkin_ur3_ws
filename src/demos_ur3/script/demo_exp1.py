@@ -70,9 +70,10 @@ class IdentificationClass():
         data_from_csv['q3'] = []
 
         rospack = rospkg.RosPack()
-        path_to_csv_file = rospack.get_path('controller')
-        csv_name = rospy.get_param('vel_ur3')
-        with open(path_to_csv_file + '/csv/' + csv_name', 'r') as file:
+        path_to_csv_file = rospack.get_path('demos_ur3')
+        csv_name = rospy.get_param('/demos_ur3/vel_ur3')
+
+        with open(path_to_csv_file + '/csv/' + csv_name, 'r') as file:
             reader = csv.reader(file)
             for row in reader:
                 data_from_csv['q3'].append(float(row[0]))
