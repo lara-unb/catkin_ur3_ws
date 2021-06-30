@@ -1,0 +1,9 @@
+# File to define the csv file name
+csv_name:
+  sine: 'ref_sine.csv'
+  square: 'ref_square.csv'
+
+ref_type:
+  online: True
+  type: 'sine'
+

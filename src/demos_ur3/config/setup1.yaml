@@ -1,6 +1,5 @@
 # File to define the csv file name
-csv_name: 'vel_ur3.csv'
+csv_name: 'ref_vel.csv'
 
 
 
-     

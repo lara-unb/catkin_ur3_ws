@@ -43,22 +43,27 @@ class IdentificationClass():
         if req.data == True:
 
             self.start = True
-            return SetBoolResponse(self.start, " Stratting identification")
+            return SetBoolResponse(self.start, " Stratting exp1")
         else:
             self.start = False
-            return SetBoolResponse(self.start, " Strop identification")
+            return SetBoolResponse(self.start, " Strop exp1")
 
 
     def loop_ref_vel(self, event):
         
         if self.start is True:
             
+            self.ref_vel_msg.data[0] =  0 #self.data_from_csv['q1'][self.interator]/5.0
+            self.ref_vel_msg.data[1] =  0 #self.data_from_csv['q2'][self.interator]/5.0
             self.ref_vel_msg.data[2] =  self.data_from_csv['q3'][self.interator]/2.0
+            self.ref_vel_msg.data[3] =  0 # self.data_from_csv['q4'][self.interator]/5.0
+            self.ref_vel_msg.data[4] =  0 #self.data_from_csv['q5'][self.interator]/5.0
+            self.ref_vel_msg.data[5] =  0 #self.data_from_csv['q6'][self.interator]/5.0
             self.ref_vel_pub.publish(self.ref_vel_msg)
 
             self.interator = self.interator + 1
 
-            if self.interator > self.length_data - 10:
+            if self.interator > self.length_data - 2:
                 self.interator = 0
 
         else:
@@ -67,22 +72,32 @@ class IdentificationClass():
     def read_data(self):
 
         data_from_csv = {}        
+        data_from_csv['q1'] = []
+        data_from_csv['q2'] = []
         data_from_csv['q3'] = []
+        data_from_csv['q4'] = []
+        data_from_csv['q5'] = []
+        data_from_csv['q6'] = []
 
         rospack = rospkg.RosPack()
         path_to_csv_file = rospack.get_path('demos_ur3')
-        csv_name = rospy.get_param('/demos_ur3/vel_ur3')
+        csv_name = rospy.get_param('/demos_ur3/csv_name')
 
         with open(path_to_csv_file + '/csv/' + csv_name, 'r') as file:
             reader = csv.reader(file)
             for row in reader:
+                data_from_csv['q1'].append(float(row[0]))
+                data_from_csv['q2'].append(float(row[0]))
                 data_from_csv['q3'].append(float(row[0]))
+                data_from_csv['q4'].append(float(row[0]))
+                data_from_csv['q5'].append(float(row[0]))
+                data_from_csv['q6'].append(float(row[0]))
 
         return data_from_csv
 
 
 if __name__ == '__main__':
-    rospy.init_node('iden')
+    rospy.init_node('exp1')
     rospy.loginfo("Starting ref to identification")
 
     try:

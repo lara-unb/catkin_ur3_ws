@@ -109,25 +109,25 @@ class Interface{
 		reverse(vector_arm);
 		arm.position[0] = ((float)vector_arm[0])/norma_float;
 		arm.velocity[0] = ((float)vector_arm[1])/norma_float;
-		arm.effort[0] = -0.012925*((float)vector_arm[2]);
+		arm.effort[0] = 0.012925*((float)vector_arm[2]);
 		//////////////////////////////////////
 		memcpy(&vector_arm, &buffer_out[12], 3*sizeof(int32_t));
 		reverse(vector_arm);
 		arm.position[1] = ((float)vector_arm[0])/norma_float;
 		arm.velocity[1] = ((float)vector_arm[1])/norma_float;
-		arm.effort[1] = -0.013088*((float)vector_arm[2]); 
+		arm.effort[1] = 0.013088*((float)vector_arm[2]); 
 		//////////////////////////////////////
 		memcpy(&vector_arm, &buffer_out[24], 3*sizeof(int32_t));
 		reverse(vector_arm);
 		arm.position[2] = ((float)vector_arm[0])/norma_float;
 		arm.velocity[2] = ((float)vector_arm[1])/norma_float;
-		arm.effort[2] = -0.009358*((float)vector_arm[2]);
+		arm.effort[2] = 0.009358*((float)vector_arm[2]);
 		//////////////////////////////////////////////////////
 		memcpy(&vector_arm, &buffer_out[36], 3*sizeof(int32_t));
 		reverse(vector_arm);
 		arm.position[3] = ((float)vector_arm[0])/norma_float;
 		arm.velocity[3] = ((float)vector_arm[1])/norma_float;
-		arm.effort[3] = -0.004572*((float)vector_arm[2]);
+		arm.effort[3] = 0.004572*((float)vector_arm[2]);
 		/////////////////////////////////////////////////////
 		memcpy(&vector_arm, &buffer_out[48], 3*sizeof(int32_t));
 		reverse(vector_arm);
@@ -139,7 +139,7 @@ class Interface{
 		reverse(vector_arm);
 		arm.position[5] = ((float)vector_arm[0])/norma_float;
 		arm.velocity[5] = ((float)vector_arm[1])/norma_float;
-		arm.effort[5] = -0.004548*((float)vector_arm[2]);
+		arm.effort[5] = 0.004548*((float)vector_arm[2]);
 		//////////////////////////////////////////////////////
 		//end arm
 		/////////////////////////////////////////////////
