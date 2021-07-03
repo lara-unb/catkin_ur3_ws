@@ -61,10 +61,11 @@ class  Exp2():
 
         rospy.Service("~target_position", SetFloat, self.target_position)
 
-        rospy.Service("~start", SetBool, self.start_control)
+        rospy.Service("~start_exp2", SetBool, self.start_control)
 
-        rospy.Subscriber("/ur3/arm", JointState, self.arm_callback)
-
+        self.arm_sub = rospy.Subscriber("/ur3/arm", JointState, self.arm_callback)
+        self.arm_sub.unregister()
+        
         self.ref_vel_pub = rospy.Publisher('ur3/ref_vel', Float64MultiArray, queue_size = 1)
         self.ref_pos_pub = rospy.Publisher('ur3/ref_pos', Float64, queue_size = 1)
 
@@ -72,18 +73,21 @@ class  Exp2():
     def start_control(self, req):
 
         if req.data == True:
+            rospy.logwarn("Startting Exp2!!!")
+            
             if self.start is True:
                 return SetBoolResponse(False, " Exp2 was aready started")
 
+            self.arm_sub = rospy.Subscriber("/ur3/arm", JointState, self.arm_callback)
             self.start = True
-            return SetBoolResponse(True, " Stratting demo_exp1")
+            return SetBoolResponse(True, " Stratting demo_exp2")
         else:
             if self.start is False:
                 return SetBoolResponse(False, " Exp2 was aready stoped")
-
+            
             self.start = False
             self.interator = 0
-            return SetBoolResponse(True, " Strop demo_exp1")
+            return SetBoolResponse(True, " Strop demo_exp2")
 
     def target_position(self, req):
         
@@ -96,45 +100,76 @@ class  Exp2():
 
     def arm_callback(self, msg):
 
-        if (self.ref_type["online"] is False) and (self.start is True):
-            self.target_pos = self.data_from_csv['q3'][self.interator]
-            self.interator = self.interator + 1
-
-            if self.interator > self.length_data -10:
-                self.start = False
-                self.interator = 0
-
-        self.ref_pos_msg.data = self.target_pos
-        self.qrk = self.target_pos
-        self.qok = msg.position[2]
-        
-        ek = self.qrk - self.qok
-
-        uk = 0.958*self.ukmenos1 + 0.30067*ek - 0.2108*self.ekmenos1
-
-        if uk > 1.5:
-            uk = 1.5
-
-        if uk < -1.5:
-            uk = -1.5
-
-
         if self.start is True:
 
-            self.ref_vel_msg.data[2] = uk
+            if self.ref_type["online"] is False:
+                self.target_pos = self.data_from_csv['q3'][self.interator]
+                self.interator = self.interator + 1
+
+                if self.interator > self.length_data -2:
+                    self.start = False
+
+            self.ref_pos_msg.data = self.target_pos
+            self.qrk = self.target_pos
+            self.qok = msg.position[2]
             
+            ek = self.qrk - self.qok
+
+            uk = 0.958*self.ukmenos1 + 0.30067*ek - 0.2108*self.ekmenos1
+
+            if uk > 1.5:
+                uk = 1.5
+
+            if uk < -1.5:
+                uk = -1.5
+
+            self.ref_vel_msg.data[2] = uk  
             self.ref_vel_pub.publish(self.ref_vel_msg)
-            self.ref_pos_pub.publish(self.ref_pos_msg)
+
+            self.ukmenos1 = uk
+            self.ekmenos1 = ek
 
         else:
+            self.arm_sub.unregister()
+            self.stop_arm()
+            self.reset_control()
             
-            self.ref_vel_pub.publish(self.ref_vel_msg_zero)
-            self.ref_pos_pub.publish(self.ref_pos_msg)
 
-        
+  
 
-        self.ukmenos1 = uk
-        self.ekmenos1 = ek
+    def reset_control(self):
+        self.qrk = 0
+        self.qrkmenos1 = 0
+
+        self.qok = 0
+        self.qokmenos1 = 0
+
+        self.ukmenos1 = 0
+        self.ekmenos1 = 0
+
+        self.target_pos = 0 
+
+        self.arm_msg = 0
+        self.interator = 0
+
+    def stop_arm(self):
+
+        counter = 0.0
+        rospy.loginfo("Stopping ARM!")
+
+        while abs(self.ref_vel_msg.data[2]) > 0:
+            
+            self.ref_vel_msg.data[2] = self.ref_vel_msg.data[2]*np.exp(-counter)
+            self.ref_vel_pub.publish(self.ref_vel_msg)
+            counter = counter + 0.01
+            rospy.sleep(0.008)
+
+            if abs(self.ref_vel_msg.data[2]) < 0.05:
+                rospy.loginfo("Ref vel is zero !!!")
+                self.ref_vel_msg.data[2] = 0.0
+                self.ref_vel_pub.publish(self.ref_vel_msg)
+                rospy.logwarn("Exp2 was fineshed !!!")
+
 
     def read_data(self):
 
@@ -155,7 +190,9 @@ class  Exp2():
 
 if __name__ == '__main__':
     rospy.init_node('demo_exp2')
-    rospy.loginfo("Starting demo_exp2")
+    rospy.loginfo("Starting demo_exp2 node")
+    rospy.logwarn("Call start sevice as true to move ur3")
+
 
     try:
         start = Exp2()

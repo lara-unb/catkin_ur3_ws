@@ -2,8 +2,9 @@
 csv_name:
   sine: 'ref_sine.csv'
   square: 'ref_square.csv'
+  your_wave: None
 
 ref_type:
-  online: True
+  online: False
   type: 'sine'
 
