@@ -12,7 +12,7 @@ from default_msgs.srv import SetFloat, SetFloatResponse
 from sensor_msgs.msg import JointState
 
 
-class  Trabcd():
+class  Exp2():
     def __init__(self):
 
         self.qrk = 0
@@ -48,7 +48,7 @@ class  Trabcd():
             
         if self.ref_type['type'] == "square":
             self.csv = csv_name["square"]
-        if self.ref_type['type'] == "sine":
+        elif self.ref_type['type'] == "sine":
             self.csv = csv_name["sine"]
 
          
@@ -72,13 +72,18 @@ class  Trabcd():
     def start_control(self, req):
 
         if req.data == True:
+            if self.start is True:
+                return SetBoolResponse(False, " Exp2 was aready started")
 
             self.start = True
-            return SetBoolResponse(self.start, " Stratting tracd")
+            return SetBoolResponse(True, " Stratting demo_exp1")
         else:
+            if self.start is False:
+                return SetBoolResponse(False, " Exp2 was aready stoped")
+
             self.start = False
             self.interator = 0
-            return SetBoolResponse(self.start, " Strop trabcd")
+            return SetBoolResponse(True, " Strop demo_exp1")
 
     def target_position(self, req):
         
@@ -149,11 +154,11 @@ class  Trabcd():
         return data_from_csv
 
 if __name__ == '__main__':
-    rospy.init_node('trabcd')
-    rospy.loginfo("Starting control trabcd")
+    rospy.init_node('demo_exp2')
+    rospy.loginfo("Starting demo_exp2")
 
     try:
-        start = Trabcd()
+        start = Exp2()
 
         rospy.spin()
 

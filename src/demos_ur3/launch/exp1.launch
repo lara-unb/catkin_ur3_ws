@@ -1,9 +1,9 @@
- <!-- This is a exemple: It's not run! -->
+
 <launch>
     
-  <node pkg="demos_ur3" name="demos_ur3" type="demo_exp1.py" output = 'screen'>
+  <node pkg="demos_ur3" name="demos_ur3" type="demo_exp1.py" output='screen'>
     
-    <rosparam command="load" file="$(find demos_ur3)/config/setup.yaml" />      
+    <rosparam command="load" file="$(find demos_ur3)/config/setup1.yaml" />      
     
   </node>
 

@@ -9,7 +9,8 @@ from std_srvs.srv import SetBool, SetBoolResponse
 from std_msgs.msg import Float64MultiArray
 
 
-class IdentificationClass():
+
+class Exp1():
     def __init__(self):
 
         self.ref_vel_msg = Float64MultiArray()
@@ -30,23 +31,32 @@ class IdentificationClass():
         self.interator = 0
         self.length_data = len(self.data_from_csv['q3'])
 
+
         self.start = False 
 
-        rospy.Service("~start", SetBool, self.start_iden)
+        rospy.Service("~start_exp1", SetBool, self.start_exp)
 
         self.ref_vel_pub = rospy.Publisher('ur3/ref_vel', Float64MultiArray, queue_size = 1)
 
         self.timer = rospy.Timer(rospy.Duration(0.008), self.loop_ref_vel)
+        self.timer.shutdown()
+        
 
-    def start_iden(self, req):
+    def start_exp(self, req):
 
         if req.data == True:
+            if self.start is True:
+                return SetBoolResponse(False, " Exp1 was aready started")
 
             self.start = True
-            return SetBoolResponse(self.start, " Stratting exp1")
+            self.timer = rospy.Timer(rospy.Duration(0.008), self.loop_ref_vel)
+            return SetBoolResponse(True, " Stratting exp1")
         else:
+            if self.start is False:
+                return SetBoolResponse(False, " Exp1 was aready stoped")
+
             self.start = False
-            return SetBoolResponse(self.start, " Strop exp1")
+            return SetBoolResponse(True, " Strop exp1")
 
 
     def loop_ref_vel(self, event):
@@ -64,10 +74,35 @@ class IdentificationClass():
             self.interator = self.interator + 1
 
             if self.interator > self.length_data - 2:
-                self.interator = 0
+                self.timer.shutdown()
+                self.start = False
+                self.stop_arm()
 
         else:
-            self.ref_vel_pub.publish(self.ref_vel_msg_zero)
+            self.timer.shutdown()
+            self.stop_arm()
+
+           
+
+    def stop_arm(self):
+
+        counter = 0.0
+        rospy.loginfo("Stopping ARM!")
+
+        while abs(self.ref_vel_msg.data[2]) > 0:
+            
+            self.ref_vel_msg.data[2] = self.ref_vel_msg.data[2]*np.exp(-counter)
+            self.ref_vel_pub.publish(self.ref_vel_msg)
+            counter = counter + 0.01
+            rospy.sleep(0.008)
+
+            if abs(self.ref_vel_msg.data[2]) < 0.05:
+                rospy.loginfo("Ref vel is zero !!!")
+                self.ref_vel_msg = self.ref_vel_msg_zero
+                self.ref_vel_pub.publish(self.ref_vel_msg_zero)
+                
+
+
     
     def read_data(self):
 
@@ -98,10 +133,11 @@ class IdentificationClass():
 
 if __name__ == '__main__':
     rospy.init_node('exp1')
-    rospy.loginfo("Starting ref to identification")
+    rospy.loginfo("Exp1 was started")
+    rospy.logwarn("Call start sevice as true to move ur3")
 
     try:
-        start = IdentificationClass()
+        start = Exp1()
 
         rospy.spin()
 

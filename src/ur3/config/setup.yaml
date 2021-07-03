@@ -1,4 +1,4 @@
-# Parameters to manual roll and pitch calibration
+# Parameters to connect ur3
 
 robot_ip: '192.168.1.56'
 # robot_ip: '0.0.0.0'

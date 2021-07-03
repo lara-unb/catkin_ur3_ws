@@ -1,5 +1,2 @@
-# File to define the csv file name
-csv_name: 'ref_vel.csv'
-
-
-
+# File to define the csv file name to exp1
+csv_name: "vel_ur3_exp1.csv"

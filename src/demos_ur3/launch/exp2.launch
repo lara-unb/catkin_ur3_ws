@@ -1,0 +1,10 @@
+
+<launch>
+    
+  <node pkg="demos_ur3" name="demos_ur3" type="demo_exp2.py" output='screen'>
+    
+    <rosparam command="load" file="$(find demos_ur3)/config/setup2.yaml" />      
+    
+  </node>
+
+</launch>
