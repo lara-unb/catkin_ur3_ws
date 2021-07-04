@@ -1,6 +1,7 @@
 
 ////////////////////////////////////////////////////////////////////////
 #include "ros/ros.h"
+#include "std_srvs/Trigger.h"
 #include "sensor_msgs/JointState.h"
 #include "ur3/end_Effector_msg.h"
 #include "ur3/ref_msg.h"
@@ -12,6 +13,9 @@
 #include "open_socket.h"
 #include "send_script.h"
 #include "read_data.h"
+#include <stdlib.h> 
+#include <ros/master.h>
+#include <unistd.h>
 
 #define RATE_LOOP (0.008F) // in sec
 
@@ -26,13 +30,15 @@ class Interface{
 
 		ros::NodeHandle  class_node_;
 
+		ros::ServiceServer reset_ur3_server_;
+
 		ros::Publisher arm_pub_;
 		ros::Publisher end_Effector_pub_;
 		ros::Subscriber sub_ref_vel_;
 
 		int new_socket_; 
 
-		ros::Timer l_timer_;
+		ros::Timer loop_timer_;
 
 		float norma_float = 1000000.0;
 		sensor_msgs::JointState arm;
@@ -52,11 +58,11 @@ class Interface{
 			send_script(); 
 			new_socket_ = open_socket();
 
-
+			reset_ur3_server_ = class_node_.advertiseService("ur3/reset", &Interface::reset_ur3, this);
 			arm_pub_ = class_node_.advertise<sensor_msgs::JointState>("ur3/arm",10);
-			end_Effector_pub_ = class_node_.advertise<ur3::end_Effector_msg>("ur3/end_effector",10);
+			end_Effector_pub_ = class_node_.advertise<ur3::end_Effector_msg>("ur3/end_effector", 10);
 			
-			l_timer_ = class_node_.createTimer(ros::Duration(RATE_LOOP), &Interface::arm_pub_state, this);
+			loop_timer_ = class_node_.createTimer(ros::Duration(RATE_LOOP), &Interface::arm_pub_state, this);
 			sub_ref_vel_ = class_node_.subscribe("ur3/ref_vel", 100, &Interface::ref_vel_Callback, this);
 			
 
@@ -78,6 +84,9 @@ class Interface{
 			ros::param::get("~max_ref_vel/joint_3", max_vel_[3]);
 			ros::param::get("~max_ref_vel/joint_4", max_vel_[4]);
 			ros::param::get("~max_ref_vel/joint_5", max_vel_[5]);
+
+  			ROS_INFO("ur3 node is running");
+
 
 
 	};
@@ -250,6 +259,50 @@ class Interface{
 
 	}
 
+	bool reset_ur3(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res){
+
+		ros::V_string nodes;
+		std::string msg_kiil;
+		ros::master::getNodes(nodes);
+		
+
+		loop_timer_.stop();
+		sub_ref_vel_.shutdown();
+
+		ROS_INFO_STREAM(new_socket_);
+		// int close(new_socket_);
+
+		// for (auto node : nodes){
+		// 	if (node != "/ur3" && node != ){
+
+		// 		ROS_INFO_STREAM("Killing " << node << " node");
+		// 		msg_kiil = "rosnode kill " + node;
+		// 		ROS_INFO_STREAM(node);
+		// 		// system(msg_kiil.c_str()); 
+
+		// 	}	
+		// }
+
+		system("rosnode kill /demos_ur3"); 
+
+
+		send_script(); 
+  	
+		new_socket_ = open_socket();
+
+		res.success = true;
+		res.message = "UR3 was resetted !";
+  		ROS_INFO("tetse3");
+		loop_timer_.start();
+		sub_ref_vel_ = class_node_.subscribe("ur3/ref_vel", 100, &Interface::ref_vel_Callback, this);
+
+		
+		ROS_INFO_STREAM(res.message.c_str());
+  		ROS_INFO("ur3 node is running");
+
+		return true;
+	}
+
 };
 
 int main(int argc, char **argv){ 
@@ -267,7 +320,6 @@ int main(int argc, char **argv){
 	//ROS
 	Interface interface(node);
 
-  	ROS_INFO("ur3 node is running");
   	ros::spin();
   	return 0;
 } 

@@ -91,12 +91,12 @@ class  Exp2():
 
     def target_position(self, req):
         
-        if self.ref_type["online"] is True:
+        if self.ref_type["online"] is True and self.start is True:
             self.target_pos = req.newFloat
 
             return SetFloatResponse(True, "Setted position: " + str(req.newFloat))
         else:
-            return SetFloatResponse(False, "Type of control is offline!")
+            return SetFloatResponse(False, "Type of control is offline or was not startted!")
 
     def arm_callback(self, msg):
 

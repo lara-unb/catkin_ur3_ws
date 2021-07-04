@@ -1,18 +1,9 @@
-#include <X11/keysymdef.h>
 #include <sys/socket.h>
 #include <stdlib.h> 
 #include <netinet/in.h> 
-#include <iostream>
 #include <stdio.h>   /* Standard input/output definitions */
-#include <string.h>  /* String function definitions */
-#include <unistd.h>  /* UNIX standard function definitions */
-#include <fcntl.h>   /* File control definitions */
 #include <errno.h>   /* Error number definitions */
-#include <termios.h> /* POSIX terminal control definitions */
-#include <string> 
-#include <stdlib.h>
-#include <sstream>
-#include <inttypes.h>
+
 #define PORT 60200
 
 int open_socket(){
@@ -27,7 +18,7 @@ int open_socket(){
 		exit(EXIT_FAILURE); 
 	} 
 	
-	// Forcefully attaching socket to the port 8080 
+	
 	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))){ 
 		perror("setsockopt"); 
 		exit(EXIT_FAILURE); 
@@ -36,7 +27,7 @@ int open_socket(){
 	address.sin_addr.s_addr = INADDR_ANY; 
 	address.sin_port = htons( PORT ); 
 
-	// Forcefully attaching socket to the port 8080 
+	
     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address))<0){ 
 		perror("bind failed"); 
 		exit(EXIT_FAILURE); 
