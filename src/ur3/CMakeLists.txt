@@ -220,8 +220,7 @@ include_directories(
 
 add_library(open_socket SHARED src/open_socket.cpp include/ur3/open_socket.h)
 add_library(send_script SHARED src/send_script.cpp include/ur3/send_script.h)
-
-
+add_library(utils SHARED src/utils.cpp include/ur3/utils.h)
 add_library(read_data SHARED src/read_data.cpp include/ur3/read_data.h)
 
 install(TARGETS open_socket DESTINATION lib)
@@ -230,12 +229,11 @@ install(FILES src/open_socket.h DESTINATION include)
 install(TARGETS send_script DESTINATION lib)
 install(FILES src/send_script.h DESTINATION include)
 
-
-
-
+install(TARGETS open_socket DESTINATION lib)
+install(FILES src/utils.h DESTINATION include)
 
 install(TARGETS read_data DESTINATION lib)
 install(FILES src/read_data.h DESTINATION include)
 
-add_executable(interface src/interface.cpp src/open_socket.cpp src/send_script.cpp src/read_data.cpp)
-target_link_libraries(interface open_socket send_script read_data ${catkin_LIBRARIES})
+add_executable(interface src/interface.cpp src/open_socket.cpp src/send_script.cpp src/read_data.cpp src/utils.cpp)
+target_link_libraries(interface open_socket send_script read_data utils ${catkin_LIBRARIES})

@@ -25,7 +25,7 @@ int send_script(){
   
     int sfd =0, n=0, b;
     char rbuff[256];
-    char sendbuffer[256];
+    char sendbuffer[1024];
 
     struct sockaddr_in serv_addr;
 

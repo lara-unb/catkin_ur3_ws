@@ -2,9 +2,11 @@
 #include <stdlib.h> 
 #include <netinet/in.h> 
 #include <stdio.h>   /* Standard input/output definitions */
-#include <errno.h>   /* Error number definitions */
+#include <errno.h>  
+#include "ros/ros.h"
 
-#define PORT 60200
+// #define PORT 60200
+#define PORT 30013	
 
 int open_socket(){
     int server_fd, new_socket, valread; 
@@ -17,6 +19,7 @@ int open_socket(){
 		perror("socket failed"); 
 		exit(EXIT_FAILURE); 
 	} 
+	ROS_INFO("q1");
 	
 	
 	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))){ 
@@ -26,22 +29,28 @@ int open_socket(){
 	address.sin_family = AF_INET; 
 	address.sin_addr.s_addr = INADDR_ANY; 
 	address.sin_port = htons( PORT ); 
+	ROS_INFO("q2");
 
 	
     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address))<0){ 
 		perror("bind failed"); 
 		exit(EXIT_FAILURE); 
 	}
+	ROS_INFO("q3");
 
 	if (listen(server_fd, 3) < 0){ 
 		perror("listen"); 
 		exit(EXIT_FAILURE); 
 	} 
+	ROS_INFO("q4");
+
 	if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0){ 
 		perror("accept"); 
 		exit(EXIT_FAILURE); 
 	}
-    
+	ROS_INFO("q5");
+
+   
     return new_socket;
 }
 

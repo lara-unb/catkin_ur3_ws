@@ -14,8 +14,8 @@
 #include "send_script.h"
 #include "read_data.h"
 #include <stdlib.h> 
-#include <ros/master.h>
-#include <unistd.h>
+#include <utils.h>
+
 
 #define RATE_LOOP (0.008F) // in sec
 
@@ -53,7 +53,6 @@ class Interface{
 		Interface(ros::NodeHandle &node){
 
 			class_node_ = node;
-			std::cout << "init Interface" << std::endl;
 
 			send_script(); 
 			new_socket_ = open_socket();
@@ -85,7 +84,7 @@ class Interface{
 			ros::param::get("~max_ref_vel/joint_4", max_vel_[4]);
 			ros::param::get("~max_ref_vel/joint_5", max_vel_[5]);
 
-  			ROS_INFO("ur3 node is running");
+			std::cout << colouredString("ur3 node is running ;)", GREEN, BOLD) << std::endl;
 
 
 
@@ -269,8 +268,7 @@ class Interface{
 		loop_timer_.stop();
 		sub_ref_vel_.shutdown();
 
-		ROS_INFO_STREAM(new_socket_);
-		// int close(new_socket_);
+		close(new_socket_);
 
 		// for (auto node : nodes){
 		// 	if (node != "/ur3" && node != ){
@@ -285,20 +283,21 @@ class Interface{
 
 		system("rosnode kill /demos_ur3"); 
 
-
 		send_script(); 
-  	
+	
 		new_socket_ = open_socket();
+	
 
 		res.success = true;
 		res.message = "UR3 was resetted !";
-  		ROS_INFO("tetse3");
+  		
 		loop_timer_.start();
 		sub_ref_vel_ = class_node_.subscribe("ur3/ref_vel", 100, &Interface::ref_vel_Callback, this);
 
 		
 		ROS_INFO_STREAM(res.message.c_str());
-  		ROS_INFO("ur3 node is running");
+  		std::cout << colouredString("ur3 node is running ;)", GREEN, BOLD) << std::endl;
+
 
 		return true;
 	}

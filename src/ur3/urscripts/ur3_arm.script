@@ -134,8 +134,11 @@ def unnamed():
   set_tcp(p[0,-0,0.18659,0,-0,0])
   HOSTNAME = "192.168.1.58" # real
   #HOSTNAME = "0.0.0.0" # simulador 
-  PORT = 60200
+  #PORT = 60200
+  PORT = 30013	
   pi = 3.14159265359
+  socket_close()
+  sleep(1)
   socket_open(HOSTNAME, PORT)
    
     thread read_data_arm():
