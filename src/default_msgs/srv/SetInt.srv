@@ -1,0 +1,4 @@
+int32 newInt
+---
+bool success
+string message
