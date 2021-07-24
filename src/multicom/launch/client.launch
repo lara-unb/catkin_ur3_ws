@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>    
 
-  <arg name="rpc_port"/>
+  <arg name="rpc_port"  default="11911"/>
   <arg name="mcast_port" default="11511"/>
 
   <node name="master_discovery" pkg="fkie_master_discovery" type="master_discovery" output="screen" >

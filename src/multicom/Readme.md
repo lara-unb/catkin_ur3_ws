@@ -10,11 +10,7 @@ This package was developed using the Rhino's docker image.
 
 The source code is private code.
 
-**Authors: Gabriel F P Araujo and Rafael Ramos**
-
-**Affiliation: [Automni](https://www.automni.com.br/)**
-
-**Maintainers: [Gabriel F P Araujo](mailto:g.araujo@automni.com.br) and [Rafael Ramos](r.matos@automni.com.br)**
+**Authors: Rafael Ramos**
 
 The multicom package has been tested under Ubuntu 18.04, [ROS Melodic](https://wiki.ros.org/melodic/Installation/Ubuntu) and Gazebo 9.
 This is a research code, expect that it changes often and any fitness for a particular purpose is disclaimed.
@@ -39,6 +35,11 @@ This is a research code, expect that it changes often and any fitness for a part
 * The [master_sync](http://fkie.github.io/multimaster_fkie/master_sync.html) node connects to the discovered master_discovery nodes (4.), requests the actual ROS state and registers the remote topics/service by local ROS master (5.).
 * The [node_manager](http://fkie.github.io/multimaster_fkie/node_manager.html) simplifies launching and managing the ROS multi-master system. It also offers options for managing nodes, topics, services, parameters and launch files through [node_manager_daemon](http://fkie.github.io/multimaster_fkie/node_manager.html). Can also be used in a single ROS master system!
 
+##### Install PIP
+For all dependences: yes for all
+    sudo apt install python-pip 
+    
+
 ##### Mulitmaster install
 Before compiling the multimaster package, install its dependecies.
 
@@ -48,7 +49,7 @@ Before compiling the multimaster package, install its dependecies.
 
 Clone the stack into your workspace.
 
-    cd catkin_ws/src
+    cd catkin_ur3_ws/src
     git clone https://github.com/fkie/multimaster_fkie.git multimaster
     rosdep update
     rosdep install -i --as-root pip:false --reinstall --from-paths multimaster
