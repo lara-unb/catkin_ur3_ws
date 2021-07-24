@@ -10,11 +10,11 @@
 #include <vector>
 #include <sys/socket.h>
 #include <string.h>  
-#include "open_socket.h"
 #include "send_script.h"
 #include "read_data.h"
 #include <stdlib.h> 
 #include <utils.h>
+#include <open_socket1.hpp>
 
 
 #define RATE_LOOP (0.008F) // in sec
@@ -30,7 +30,7 @@ class Interface{
 
 		ros::NodeHandle  class_node_;
 
-		ros::ServiceServer reset_ur3_server_;
+		ros::ServiceServer reset_ur3_server_, stop_ur3_pub_server_;
 
 		ros::Publisher arm_pub_;
 		ros::Publisher end_Effector_pub_;
@@ -38,7 +38,10 @@ class Interface{
 
 		int new_socket_; 
 
+		ur3::OpenSocket open_socket_;
+
 		ros::Timer loop_timer_;
+		ros::Timer loop_check_connection_;
 
 		float norma_float = 1000000.0;
 		sensor_msgs::JointState arm;
@@ -55,17 +58,22 @@ class Interface{
 			class_node_ = node;
 
 			send_script(); 
-			new_socket_ = open_socket();
+			open_socket_.initialize(class_node_);
+			new_socket_ = open_socket_.connect();
+			
+			
 
 			reset_ur3_server_ = class_node_.advertiseService("ur3/reset", &Interface::reset_ur3, this);
+			stop_ur3_pub_server_ = class_node_.advertiseService("ur3/stop_pub", &Interface::stop_ur3_pub, this);
 			arm_pub_ = class_node_.advertise<sensor_msgs::JointState>("ur3/arm",10);
 			end_Effector_pub_ = class_node_.advertise<ur3::end_Effector_msg>("ur3/end_effector", 10);
 			
 			loop_timer_ = class_node_.createTimer(ros::Duration(RATE_LOOP), &Interface::arm_pub_state, this);
+			// loop_check_connection_ = class_node_.createTimer(ros::Duration(1.0), &Interface::check_connection, this);
 			sub_ref_vel_ = class_node_.subscribe("ur3/ref_vel", 100, &Interface::ref_vel_Callback, this);
 			
 
-			arm.header.frame_id = " ";
+			arm.header.frame_id = "ur3";
 			arm.name.resize(6);
 			arm.position.resize(6);
 			arm.velocity.resize(6);
@@ -77,6 +85,8 @@ class Interface{
 			arm.name[4] = "Wrist 2";
 			arm.name[5] = "Wrist 3";
 
+			end_effector.header.frame_id = "end_effector";
+
 			ros::param::get("~max_ref_vel/joint_0", max_vel_[0]);
 			ros::param::get("~max_ref_vel/joint_1", max_vel_[1]);
 			ros::param::get("~max_ref_vel/joint_2", max_vel_[2]);
@@ -84,7 +94,7 @@ class Interface{
 			ros::param::get("~max_ref_vel/joint_4", max_vel_[4]);
 			ros::param::get("~max_ref_vel/joint_5", max_vel_[5]);
 
-			std::cout << colouredString("ur3 node is running ;)", GREEN, BOLD) << std::endl;
+			std::cout << colouredString("Communication Interface node is running ;)", GREEN, BOLD) << std::endl;
 
 
 
@@ -108,9 +118,16 @@ class Interface{
 		n[2] = ( ((n[2] & 0x000000FF)<<24) + ((n[2] & 0x0000FF00)<<8) + ((n[2] & 0x00FF0000)>>8) + (( n[2] & 0xFF000000)>>24) );
 	}
 
+	// void check_connection(const ros::TimerEvent& event){
+	// 	int error_code;
+	// 	int error_code_size = sizeof(error_code);
+	// 	getsockopt(socket_fd, SOL_SOCKET, SO_ERROR, &error_code, &error_code_size);
+	// }
+
 	void arm_pub_state(const ros::TimerEvent& event){
 
 		b = recv(new_socket_, &buffer_out, 156, 0);
+
 		///////////////////////////////////////////////////////////
 		//beginning arm 
 		memcpy(&vector_arm, &buffer_out[0], 3*sizeof(int32_t));
@@ -258,7 +275,18 @@ class Interface{
 
 	}
 
+
+	bool stop_ur3_pub(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res){
+
+		loop_timer_.stop();
+		sub_ref_vel_.shutdown();
+
+		return true;
+
+	}
+
 	bool reset_ur3(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res){
+		
 
 		ros::V_string nodes;
 		std::string msg_kiil;
@@ -268,8 +296,9 @@ class Interface{
 		loop_timer_.stop();
 		sub_ref_vel_.shutdown();
 
-		close(new_socket_);
+		open_socket_.disconnect();
 
+		ros::Duration(1.0).sleep();
 		// for (auto node : nodes){
 		// 	if (node != "/ur3" && node != ){
 
@@ -281,12 +310,13 @@ class Interface{
 		// 	}	
 		// }
 
-		system("rosnode kill /demos_ur3"); 
+		// system("rosnode kill /demos_ur3"); 
 
 		send_script(); 
-	
-		new_socket_ = open_socket();
-	
+		
+		open_socket_.initialize(class_node_);	
+		new_socket_ = open_socket_.connect();
+		
 
 		res.success = true;
 		res.message = "UR3 was resetted !";
@@ -296,7 +326,7 @@ class Interface{
 
 		
 		ROS_INFO_STREAM(res.message.c_str());
-  		std::cout << colouredString("ur3 node is running ;)", GREEN, BOLD) << std::endl;
+  		std::cout << colouredString("Communication Interface node is running ;)", GREEN, BOLD) << std::endl;
 
 
 		return true;

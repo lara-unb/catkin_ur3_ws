@@ -1,2 +1,11 @@
 # File to define the csv file name to exp1
 csv_name: "vel_ur3_exp1.csv"
+
+active_joints:
+  Base: Flase
+  Shoulder: Flase
+  Elbow: True
+  Wrist1: Flase
+  Wrist2: Flase
+  Wrist3: Flase
+

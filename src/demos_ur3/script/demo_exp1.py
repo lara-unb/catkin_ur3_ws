@@ -65,7 +65,7 @@ class Exp1():
             
             self.ref_vel_msg.data[0] =  0 #self.data_from_csv['q1'][self.interator]/5.0
             self.ref_vel_msg.data[1] =  0 #self.data_from_csv['q2'][self.interator]/5.0
-            self.ref_vel_msg.data[2] =  self.data_from_csv['q3'][self.interator]/2.0
+            self.ref_vel_msg.data[2] =  self.data_from_csv['q3'][self.interator]/4.0
             self.ref_vel_msg.data[3] =  0 # self.data_from_csv['q4'][self.interator]/5.0
             self.ref_vel_msg.data[4] =  0 #self.data_from_csv['q5'][self.interator]/5.0
             self.ref_vel_msg.data[5] =  0 #self.data_from_csv['q6'][self.interator]/5.0
@@ -85,7 +85,7 @@ class Exp1():
            
 
     def stop_arm(self):
-
+        self.interator = 0
         counter = 0.0
         rospy.loginfo("Stopping ARM!")
 
@@ -98,7 +98,7 @@ class Exp1():
 
             if abs(self.ref_vel_msg.data[2]) < 0.05:
                 rospy.loginfo("Ref vel is zero !!!")
-                self.ref_vel_msg = self.ref_vel_msg_zero
+                self.ref_vel_msg.data[2] = 0.0
                 self.ref_vel_pub.publish(self.ref_vel_msg_zero)
                 
 

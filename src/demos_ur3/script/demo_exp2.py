@@ -155,6 +155,7 @@ class  Exp2():
 
     def stop_arm(self):
 
+        self.interator = 0
         counter = 0.0
         rospy.loginfo("Stopping ARM!")
 

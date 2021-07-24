@@ -8,3 +8,10 @@ ref_type:
   online: True
   type: 'sine'
 
+active_joints:
+  Base: Flase
+  Shoulder: Flase
+  Elbow: True
+  Wrist1: Flase
+  Wrist2: Flase
+  Wrist3: Flase
