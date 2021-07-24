@@ -37,6 +37,7 @@ This is a research code, expect that it changes often and any fitness for a part
 
 ##### Install PIP
 For all dependences: yes for all
+
     sudo apt install python-pip 
     
 
