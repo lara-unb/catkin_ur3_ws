@@ -9,9 +9,9 @@ ref_type:
   type: 'sine'
 
 active_joints:
-  Base: Flase
-  Shoulder: Flase
+  Base: False
+  Shoulder: False
   Elbow: True
-  Wrist1: Flase
-  Wrist2: Flase
-  Wrist3: Flase
+  Wrist1: False
+  Wrist2: False
+  Wrist3: False

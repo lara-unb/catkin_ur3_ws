@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <launch>    
 
-  <arg name="rpc_port"  default="11911"/>
+  <arg name="rpc_port"  default="11611"/>
   <arg name="mcast_port" default="11511"/>
+  <arg name="output" default="log"/>
 
-  <node name="master_discovery" pkg="fkie_master_discovery" type="master_discovery" output="screen" >
+  <node name="master_discovery" pkg="fkie_master_discovery" type="master_discovery" output="$(arg output)" >
     <param name="log_level" value="INFO" />
     <!-- Specifies the multicast group. You can bind the to defined interface by adding @address to the group -->
     <param name="mcast_group" value="226.0.0.0" />
@@ -65,14 +66,14 @@
     <rosparam param="ignore_hosts">[]</rosparam>
 
     <!-- This list with names of ROS master to synchronize. Only this ROS master in this list will be synchronized. The ~ignore_hosts list is processed first. -->
-    <rosparam param="sync_hosts">[]</rosparam>
+    <rosparam param="sync_hosts">[server]</rosparam>
 
     <!-- The list of nodes, which are to be ignored while a synchroniation. All their topics and services are ignored!
     These are defaults and cannot be removed: [/rosout, "/*master_sync* node", "remote /*master_discovery* node", "/*node_manager", /*zeroconf] -->
     <rosparam param="ignore_nodes">[]</rosparam>
 
     <!-- The list of nodes to synchronize. Only topics of this nodes are synchronized. The ~ignore_nodes, ~ignore_topics and ~ignore_services lists are processed first. -->
-    <rosparam param="sync_nodes">['/multi_robot/goal_manager', '/gazebo', '/multi_robot/local_plan_coordinator']</rosparam>
+    <rosparam param="sync_nodes">['/server']</rosparam>
 
     <!-- The list of topics, which are to be ignored while a synchroniation. The ~ignore_nodes list is processed first.
     These are defaults and cannot be removed: ['/rosout', '/rosout_agg'] -->
@@ -82,7 +83,7 @@
     <rosparam param="ignore_subscribers">[]</rosparam>
 
     <!-- The list of topics to synchronize. The ~ignore_nodes and ~ignore_topics lists are processed first. -->
-    <rosparam param="sync_topics">[]</rosparam>
+    <rosparam param="sync_topics">['/server']</rosparam>
 
     <!-- The list of services, which are to be ignored while a synchroniation. The ~ignore_nodes list is processed first.
     These are defaults and cannot be removed: ['/*get_loggers', '/*set_logger_level'] -->

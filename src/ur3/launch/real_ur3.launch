@@ -1,5 +1,17 @@
  <!-- This is a exemple: It's not run! -->
 <launch>
+
+  <include file="$(find multicom)/launch/client.launch">
+
+    <arg name="output" value="log" />
+
+  </include>
+
+  <node pkg="ur3" name="ur3_listener" type="intercom.py" output = 'screen'>>
+
+    <!-- <rosparam command="load" file="$(find ur3)/config/setup.yaml" /> -->
+          
+  </node>
     
   <node pkg="ur3" name="ur3" type="interface" output = 'screen'>>
 

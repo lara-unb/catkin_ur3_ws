@@ -6,6 +6,7 @@
 #include "ur3/end_Effector_msg.h"
 #include "ur3/ref_msg.h"
 #include "std_msgs/Float64.h"
+#include "std_msgs/String.h"
 #include "std_msgs/Float64MultiArray.h"
 #include <vector>
 #include <sys/socket.h>
@@ -35,6 +36,9 @@ class Interface{
 		ros::Publisher arm_pub_;
 		ros::Publisher end_Effector_pub_;
 		ros::Subscriber sub_ref_vel_;
+
+		ros::Subscriber sub_listener_;
+
 
 		int new_socket_; 
 
@@ -275,7 +279,6 @@ class Interface{
 
 	}
 
-
 	bool stop_ur3_pub(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res){
 
 		loop_timer_.stop();
@@ -287,7 +290,6 @@ class Interface{
 
 	bool reset_ur3(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res){
 		
-
 		ros::V_string nodes;
 		std::string msg_kiil;
 		ros::master::getNodes(nodes);
@@ -299,18 +301,6 @@ class Interface{
 		open_socket_.disconnect();
 
 		ros::Duration(1.0).sleep();
-		// for (auto node : nodes){
-		// 	if (node != "/ur3" && node != ){
-
-		// 		ROS_INFO_STREAM("Killing " << node << " node");
-		// 		msg_kiil = "rosnode kill " + node;
-		// 		ROS_INFO_STREAM(node);
-		// 		// system(msg_kiil.c_str()); 
-
-		// 	}	
-		// }
-
-		// system("rosnode kill /demos_ur3"); 
 
 		send_script(); 
 		
@@ -333,6 +323,8 @@ class Interface{
 	}
 
 };
+
+
 
 int main(int argc, char **argv){ 
 		
