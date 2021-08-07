@@ -45,9 +45,12 @@ class MainNode:
 
     def arm_callback(self, msg):
 
-        self.ref_vel_msg = self.controller.control_law(msg, self.ref_pose_msg)
+        ref_vel_msg = self.controller.control_law(msg, self.ref_pose_msg)
 
         for (idx, data) in enumerate(self.ref_vel_msg.data):
+            
+            self.ref_vel_msg.data[idx] = ref_vel_msg[idx]
+            
             if data > 1.5:
                 self.ref_vel_msg.data[idx] = 1.5
         ##############################################################################################

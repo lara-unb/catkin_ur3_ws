@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 # CONTROLADOR DE POSICAO
-from std_msgs.msg import Float64MultiArray
-
 class MyControl:
 
     def __init__(self):
         # Defina os parametros do controlador e variaveis 
         # globais neste metodo (__init__)
-
         #############################################################
         # Para todas as juntas do ur3, da junta da base 
         # ate a junta do efetuador terminal, defina o estado inicial
@@ -28,8 +25,7 @@ class MyControl:
         ##############################################################
         # Construcao das mensagens de posicao de referencia e de
         # velocidade referencia;
-        self.ref_vel_msg = Float64MultiArray()
-        self.ref_vel_msg.data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.ref_vel_msg = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         ##############################################################
         
     def control_law(self, msg, ref_pose_msg):
@@ -51,7 +47,7 @@ class MyControl:
             self.ukmenos1[idx] = self.uk[idx]
             self.ekmenos1[idx] = self.ek[idx]
 
-            self.ref_vel_msg.data[idx] = self.uk[idx]
+            self.ref_vel_msg[idx] = self.uk[idx]
 
         ###############################################################
         #saida do controlador
