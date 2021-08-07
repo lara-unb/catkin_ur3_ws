@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # CONTROLADOR DE POSICAO
 class MyControl:
-
     def __init__(self):
         # Defina os parametros do controlador e variaveis 
         # globais neste metodo (__init__)

@@ -47,10 +47,10 @@ class MainNode:
 
         ref_vel_msg = self.controller.control_law(msg, self.ref_pose_msg)
 
-        for (idx, data) in enumerate(self.ref_vel_msg.data):
+        for (idx, data) in enumerate(ref_vel_msg):
             
             self.ref_vel_msg.data[idx] = ref_vel_msg[idx]
-            
+
             if data > 1.5:
                 self.ref_vel_msg.data[idx] = 1.5
         ##############################################################################################
