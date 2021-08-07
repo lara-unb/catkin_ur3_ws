@@ -1,0 +1,6 @@
+# define the name of file and class
+# where you wrote your control
+control:
+  control_name: control_aa
+  file_name: controle_avanco_atraso
+  class_name: MyControl

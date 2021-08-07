@@ -1,0 +1,10 @@
+
+<launch>
+    
+  <node pkg="ur3_controls" name="ur3_controls" type="main.py" output='screen'>
+    
+    <rosparam command="load" file="$(find ur3_controls)/config/define_control.yaml" />      
+    
+  </node>
+
+</launch>

@@ -60,6 +60,7 @@ add_message_files(
    SimpleTrigger.srv
    GetString.srv
    SetFloat.srv
+   SetArrayFloat.srv
  )
 
 ## Generate actions in the 'action' folder
