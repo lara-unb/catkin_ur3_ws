@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# CONTROLADOR DE POSICAO
 from std_msgs.msg import Float64MultiArray
 
 class MyControl:
@@ -28,22 +29,22 @@ class MyControl:
         # Construcao das mensagens de posicao de referencia e de
         # velocidade referencia;
         self.ref_vel_msg = Float64MultiArray()
-        self.ref_pose_msg = Float64MultiArray()
+        self.ref_vel_msg.data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         ##############################################################
         
-    def control_law(self, msg, target_pos):
-        
+    def control_law(self, msg, ref_pose_msg):
         ##############################################################
         # Loop que gere todas as variaveis do controlador 
-        for idx in range(5):
+        for idx in range(6):
 
-            self.qrk[idx] = target_pos[idx]
+            self.qrk[idx] = ref_pose_msg.data[idx]
             self.qok[idx] = msg.position[idx]
 
             self.ek[idx] = self.qrk[idx] - self.qok[idx]
 
             ##########################################################################################
-            # Lei de controle para o controlador poroposto
+            # Lei de controle para o controlador proposto
+            # para todas as juntas 
             self.uk[idx] = 0.958*self.ukmenos1[idx] + 0.30067*self.ek[idx] - 0.2108*self.ekmenos1[idx]
             ##########################################################################################
 
@@ -51,11 +52,8 @@ class MyControl:
             self.ekmenos1[idx] = self.ek[idx]
 
             self.ref_vel_msg.data[idx] = self.uk[idx]
-            self.ref_pose_msg.data[idx] = self.target_pos[idx]
 
         ###############################################################
-        return (self.ref_pose_msg, self.ref_vel_msg)
+        #saida do controlador
+        return self.ref_vel_msg
         ###############################################################
-
-    def ping(self):
-        return "pong"

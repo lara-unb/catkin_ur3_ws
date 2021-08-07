@@ -2,11 +2,10 @@
 import rospy
 import rospkg
 import numpy as np
-import importlib
 from std_srvs.srv import SetBool, SetBoolResponse
 from std_msgs.msg import Float64MultiArray
 from default_msgs.srv import SetFloat, SetFloatResponse
-from default_msgs.srv import SetArrayFloat, SetArrayFloatResponse
+from default_msgs.msg import JointPosition
 from sensor_msgs.msg import JointState
 
 
@@ -17,31 +16,40 @@ class MainNode:
         name_control = rospy.get_param('/ur3_controls/control/control_name')
         file_control = rospy.get_param('/ur3_controls/control/file_name')
         class_control = rospy.get_param('/ur3_controls/control/class_name')
-        control = __import__(file_control + "." + class_control) 
-        print(control)
-        # MyControl =  control.(class_control)
-        # self.controller = MyControl()
+        fuul_name = file_control + "." + class_control
+
+        mod = __import__(file_control)
+        MyControl = getattr(mod, class_control)
+        self.controller = MyControl()
         # print(self.controller.ping())
        
         ####################################################################################
         # Construco de topicos, servicos e mensagens ROS
         self.arm_sub = rospy.Subscriber("/ur3/arm", JointState, self.arm_callback)
+        self.arm_sub.unregister()
         self.ref_vel_pub = rospy.Publisher('ur3/ref_vel', Float64MultiArray, queue_size = 1)
-        self.ref_pos_pub = rospy.Publisher('ur3/ref_pos', Float64MultiArray, queue_size = 1)
+        self.ref_pose_pub = rospy.Publisher('ur3/ref_pose', Float64MultiArray, queue_size = 1)
 
-        self.target_pos = rospy.Subscriber("~" + name_control + "/target_position", Float64MultiArray, self.target_position)
+        self.target_pos = rospy.Subscriber("~" + name_control + "/target_position", JointPosition, self.target_position)
         rospy.Service("~start_" + name_control, SetBool, self.start_control)
 
         self.ref_vel_msg = Float64MultiArray()
         self.ref_pose_msg = Float64MultiArray()
-        self.target_pose = [0, 0 , 0 , 0 , 0, 0]
+        self.ref_vel_msg.data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.ref_pose_msg.data = [0.0, -1.570796, 0.0, -1.570796 ,0.0 , 0.0]
+        # self.target_pose = [0.0, -1.570796, 0.0, -1.570796 ,0.0 , 0.0]
+
+        self.start = False
         #####################################################################################
 
 
     def arm_callback(self, msg):
 
-        (self.ref_pose_msg, self.ref_vel_msg) = self.controller.control_law(msg, self.target_pose)
-        
+        self.ref_vel_msg = self.controller.control_law(msg, self.ref_pose_msg)
+
+        for (idx, data) in enumerate(self.ref_vel_msg.data):
+            if data > 1.5:
+                self.ref_vel_msg.data[idx] = 1.5
         ##############################################################################################
         # publicando as mensagens para Interface de Comunicacao 
         self.ref_vel_pub.publish(self.ref_vel_msg)
@@ -52,17 +60,16 @@ class MainNode:
     def target_position(self, msg):
         
         if self.start is True:
-            self.target_pose[0] = msg.data[0]
-            self.target_pose[1] = msg.data[1]
-            self.target_pose[2] = msg.data[2]
-            self.target_pose[3] = msg.data[3]
-            self.target_pose[4] = msg.data[4]
-            self.target_pose[5] = msg.data[5]
+            self.ref_pose_msg.data[0] = msg.Base
+            self.ref_pose_msg.data[1] = msg.Shoulder
+            self.ref_pose_msg.data[2] = msg.Elbow
+            self.ref_pose_msg.data[3] = msg.Wrist1
+            self.ref_pose_msg.data[4] = msg.Wrist2
+            self.ref_pose_msg.data[5] = msg.Wrist3
 
         else:
-            pass
+            self.stop_arm()
             
-
     def start_control(self, req):
 
         if req.data == True:
