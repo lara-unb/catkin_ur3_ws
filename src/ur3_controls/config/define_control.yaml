@@ -3,7 +3,8 @@
 control:
   control_name: control_aa #(nick name for control (whatever you want))
   file_name: controle_avanco_atraso #(python file name without "".py")
-  class_name: MyControl #(class name that you wrote in controle_avanco_atraso.py)
+  class_name: MyControl #(class name that you wrote in
+  #controle_avanco_atraso.py)
 
 # Choose the csv fine for offline experiment
 csv_name:
@@ -11,7 +12,8 @@ csv_name:
   square: 'ref_square.csv' # Default to demo (type square)
   your_wave: None # Custom to your experiment (type your_wave)
 
-#Choose if you want online or offline experiment (if offline type, choose the wave type)
+#Choose if you want online or offline experiment (if offline
+# type, choose the wave type)
 # and type of reference
 reference_type:
   online: True
