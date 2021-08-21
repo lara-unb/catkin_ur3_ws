@@ -46,13 +46,13 @@ class MyControl:
             ###########################################################
             # Lei de controle para o controlador proposto
             # para todas as juntas 
-            self.Velocity[idx] = (0.958*self.Velocity_Old[idx]
+            self.Reference_Velocity[idx] = (0.958*self.Velocity_Old[idx]
              + 0.30067*self.Position_Erro[idx]
              - 0.2108*self.Position_Erro_Old[idx])
             ###########################################################
-            self.Velocity_Old[idx] = self.Velocity[idx]
+            self.Reference_Velocity_Old[idx] = self.Reference_Velocity[idx]
             self.Position_Erro_Old[idx] = self.Position_Erro[idx]
         ###############################################################
         # sinal de controle parada junta do robo(sinal de velocidade)
-        return  self.Velocity
+        return self.Reference_Velocity
         ###############################################################
