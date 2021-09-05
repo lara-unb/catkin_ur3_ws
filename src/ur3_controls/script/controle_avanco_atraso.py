@@ -14,8 +14,8 @@ class MyControl:
         self.Refence_Position = [0, 0, 0, 0, 0, 0] # entrada de posicao qr[k]  
         self.Position = [0, 0, 0, 0, 0, 0] # saida de posicao qo[k] 
         
-        self.Refence_Velocity = [0, 0, 0, 0, 0, 0] # sinal de controle u[k] 
-        self.Refence_Velocity_Old = [0, 0, 0, 0, 0, 0] # sinal de controle u[k-1] 
+        self.Reference_Velocity = [0, 0, 0, 0, 0, 0] # sinal de controle u[k] 
+        self.Reference_Velocity_Old = [0, 0, 0, 0, 0, 0] # sinal de controle u[k-1] 
 
         self.Position_Erro = [0, 0, 0, 0, 0, 0] # sinal de erro e[k]
         self.Position_Erro_Old = [0, 0, 0, 0, 0, 0] # sinal de erro e[k-1] 
@@ -42,11 +42,11 @@ class MyControl:
             # self.ek[idx]: sinal de erro de posicao para
             # cada junta(entra - saida)
             self.Position_Erro[idx] = (self.Refence_Position[idx]
-             - self.Position[idx][idx])
+             - self.Position[idx])
             ###########################################################
             # Lei de controle para o controlador proposto
             # para todas as juntas 
-            self.Reference_Velocity[idx] = (0.958*self.Velocity_Old[idx]
+            self.Reference_Velocity[idx] = (0.958*self.Reference_Velocity_Old[idx]
              + 0.30067*self.Position_Erro[idx]
              - 0.2108*self.Position_Erro_Old[idx])
             ###########################################################

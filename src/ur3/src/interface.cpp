@@ -69,8 +69,8 @@ class Interface{
 
 			reset_ur3_server_ = class_node_.advertiseService("ur3/reset", &Interface::reset_ur3, this);
 			stop_ur3_pub_server_ = class_node_.advertiseService("ur3/stop_pub", &Interface::stop_ur3_pub, this);
-			arm_pub_ = class_node_.advertise<sensor_msgs::JointState>("ur3/arm",10);
-			end_Effector_pub_ = class_node_.advertise<ur3::end_Effector_msg>("ur3/end_effector", 10);
+			arm_pub_ = class_node_.advertise<sensor_msgs::JointState>("ur3/arm",1);
+			end_Effector_pub_ = class_node_.advertise<ur3::end_Effector_msg>("ur3/end_effector", 1);
 			
 			loop_timer_ = class_node_.createTimer(ros::Duration(RATE_LOOP), &Interface::arm_pub_state, this);
 			// loop_check_connection_ = class_node_.createTimer(ros::Duration(1.0), &Interface::check_connection, this);

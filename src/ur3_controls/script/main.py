@@ -33,7 +33,7 @@ class MainNode:
             self.csv = csv_name["sine"]
         if self.reference_type['type'] == "your_wave":
             self.csv = csv_name["your_wave"]
-
+   
         self.data_from_csv = self.read_data()
         self.interator = 0
         self.length_data = len(self.data_from_csv['q1'])
@@ -59,7 +59,7 @@ class MainNode:
         # self.target_pose = [0.0, -1.570796, 0.0, -1.570796 ,0.0 , 0.0]
 
         self.start = False
-        self.max_vel = 0.1
+        self.max_vel = 1.0
         #####################################################################################
 
     def arm_initial_pose(self, msg):
@@ -188,7 +188,7 @@ class MainNode:
                            + abs(self.ref_vel_msg.data[3]) +abs(self.ref_vel_msg.data[4]) +abs(self.ref_vel_msg.data[5]))/6.0
 
 
-            if vel_average < 0.02:
+            if vel_average < 0.002:
                 rospy.loginfo("Ref vel is zero !!!")
                 self.ref_vel_msg.data[0] = 0.0
                 self.ref_vel_msg.data[1] = 0.0
