@@ -1,0 +1,10 @@
+rostopic pub /ur3_controls/control_aa/target_position default_msgs/JointPosition "header:
+  seq: 0        
+  stamp: {secs: 0, nsecs: 0}
+  frame_id: ''
+Base: 0.2
+Shoulder: -1.570796
+Elbow: 0.0
+Wrist1: -1.570796
+Wrist2: 0.0
+Wrist3: 0.0"
