@@ -132,7 +132,7 @@ def unnamed():
 
   set_tool_voltage(24)
   set_tcp(p[0,-0,0.18659,0,-0,0])
-  HOSTNAME = "192.168.1.58" # real
+  HOSTNAME = "192.168.1.59" # real
   #HOSTNAME = "0.0.0.0" # simulador 
   #PORT = 60200
   PORT = 30013	

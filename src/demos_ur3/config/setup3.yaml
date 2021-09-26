@@ -1,0 +1,17 @@
+# File to define the csv file name
+csv_name:
+  sine: 'ref_sine.csv'
+  square: 'ref_square.csv'
+  your_wave: None
+
+ref_type:
+  online: False
+  type: 'sine'
+
+active_joints:
+  Base: False
+  Shoulder: False
+  Elbow: True
+  Wrist1: False
+  Wrist2: False
+  Wrist3: False

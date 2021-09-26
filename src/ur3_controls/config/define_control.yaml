@@ -19,13 +19,13 @@ reference_type:
   online: False
   type: 'sine' # if online is define as True type is ignored
 
-#choose which joints you want activated
+#choose which joints you want to activate
 activated_joints:
-  Base: True
+  Base: False
   Shoulder: False
   Elbow: False
   Wrist1: False
   Wrist2: False
-  Wrist3: False
+  Wrist3: True
 
 

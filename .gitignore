@@ -13,6 +13,7 @@ dist/
 /logs
 build/
 devel/
+bags/
 */.vscode/*
 .vscode/
 
