@@ -8,6 +8,7 @@
 #include "std_msgs/Float64.h"
 #include "std_msgs/String.h"
 #include "std_msgs/Float64MultiArray.h"
+#include "control_msgs/GripperCommand.h"
 #include <vector>
 #include <sys/socket.h>
 #include <string.h>  
@@ -36,6 +37,7 @@ class Interface{
 		ros::Publisher arm_pub_;
 		ros::Publisher end_Effector_pub_;
 		ros::Subscriber sub_ref_vel_;
+		ros::Subscriber sub_ref_end_effector_;
 
 		ros::Subscriber sub_listener_;
 
@@ -47,7 +49,9 @@ class Interface{
 		ros::Timer loop_timer_;
 		ros::Timer loop_check_connection_;
 
-		float norma_float = 1000000.0;
+		float norma_float = 1000000.0, target_width = 40.0, width_gripper;
+		bool new_gripper_position = false;
+		int counter_gripper = 125;
 		sensor_msgs::JointState arm;
 		ur3::end_Effector_msg end_effector;
 		int32_t vector_arm[3];
@@ -75,6 +79,7 @@ class Interface{
 			loop_timer_ = class_node_.createTimer(ros::Duration(RATE_LOOP), &Interface::arm_pub_state, this);
 			// loop_check_connection_ = class_node_.createTimer(ros::Duration(1.0), &Interface::check_connection, this);
 			sub_ref_vel_ = class_node_.subscribe("ur3/ref_vel", 100, &Interface::ref_vel_Callback, this);
+			sub_ref_end_effector_ = class_node_.subscribe("ur3/ref_end_effector", 100, &Interface::gripper_Callback, this);
 			
 
 			arm.header.frame_id = "ur3";
@@ -178,6 +183,7 @@ class Interface{
 		end_effector.gripper.position = ((float)vector_arm[0])/norma_float;
 		end_effector.gripper.max_effort = ((float)vector_arm[1])/norma_float;
 		end_effector.state.data = ((float)vector_arm[2])/norma_float;
+		width_gripper = end_effector.gripper.position;
 		/////////////////////////////////////////
 		// tcp pose
 		////position
@@ -238,6 +244,8 @@ class Interface{
 		ref_vel_[3] = ref_vel_sub->data[3];
 		ref_vel_[4] = ref_vel_sub->data[4];
 		ref_vel_[5] = ref_vel_sub->data[5];
+		ref_vel_[6] = 0;
+		ref_vel_[7] = 0;
 
 		for (int i = 0; i < 6; ++i) {
 
@@ -269,13 +277,38 @@ class Interface{
 
 		buffer_in_[5] = (int)(ref_vel_[5]*norma_float);
 		reverse_word(buffer_in_[5]);
+
 		// gripper
+
 		
+
+		ref_vel_[6] = target_width;
+		if (new_gripper_position){
+			ref_vel_[7] = 0;
+			counter_gripper--;
+			if (counter_gripper < 1){
+				new_gripper_position = false;
+				counter_gripper = 20;
+			}
+				
+		}else{
+		
+			ref_vel_[7] = 1;
+		}
+
 		buffer_in_[6] = (int)(ref_vel_[6]*norma_float);
 		reverse_word(buffer_in_[6]);
 		buffer_in_[7] = (int)(ref_vel_[7]*norma_float);
 		reverse_word(buffer_in_[7]);
+
 		send(new_socket_, buffer_in_, 32, 0);
+
+	}
+
+	void gripper_Callback(const control_msgs::GripperCommand::ConstPtr& ref_end_effector){
+
+		target_width = ref_end_effector->position;
+		new_gripper_position = true;
 
 	}
 

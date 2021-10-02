@@ -13,7 +13,7 @@ function [time, input_pose,  input_vel, output_pose, output_vel, output_effort] 
     
     input_vel_structs = readMessages(input_sel_vel,'DataFormat','struct');
     
-    time = zeros(output_sel.NumMessages,1);
+    time = zeros(input_sel_pose.NumMessages,1);
     
     input_pose = zeros(input_sel_pose.NumMessages,6);
     input_vel = zeros(input_sel_pose.NumMessages,6);

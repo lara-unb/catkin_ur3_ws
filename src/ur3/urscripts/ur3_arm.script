@@ -43,6 +43,7 @@ def unnamed():
 		x = 0
 		while True:
 			target_force = 10
+			target_width = gripper[1]
 			if target_width > 100:
 				target_width = 100
 			end
@@ -60,18 +61,7 @@ def unnamed():
 			else:
 				master_grip_detected=False
 			end
-			
-			if gripper[1] == 1:
-				target_width = 100
-			end
-			if gripper[2] == 1:
-				target_width = 0
-			end
-			
-			if (gripper[1] == 0) and (gripper[2] == 0):
-				target_width = largura
-			end
-		
+
 			def bit(x_width, x_force):
 				x_width=x_width+10
 				input=floor(x_width)*4
@@ -96,34 +86,14 @@ def unnamed():
 				end
 				sleep(0.01)
 			end
-			
-			bit(target_width, target_force)
-			
-			while (gripper[1] == 1) and (gripper[2] == 0):
+			if gripper[2] == 1:
+
+				bit(target_width, target_force)
+
+				while gripper[2] == 1:
 					sleep(0.05)
-			end
-			
-			while (gripper[1] == 0) and (gripper[2] == 1):
-				sleep(0.05)
-			end
-			if (gripper[1] == 0) and (gripper[2] == 0):
-				target_width = largura
-				#target_force = 10
-			end
-			while(gripper[1]  > 1) or (gripper[1] < 0):
-				sleep(0.05)		
-			end
-			while(gripper[2]  > 1) or (gripper[2] < 0):
-				sleep(0.05)		
-			end
-			while(gripper[1] == 1) and (gripper[2] == 1):
-				sleep(0.1)	
-				target_width = largura
-				#target_force = 10	
-			end
-			bit(target_width, target_force)
-			while(gripper[1] == 0) and (gripper[2] == 0):
-				sleep(0.05)		
+				end
+
 			end
 			sleep(0.008)
 			sync()
@@ -230,9 +200,10 @@ def unnamed():
 			velocity[4] = velocity[4]/1000000.00
 			velocity[5] = velocity[5]/1000000.00
 			velocity[6] = velocity[6]/1000000.00
-			# positions and torque
-			gripper[1] = velocity[7]/1000000.00
-			gripper[2] = velocity[8]/1000000.00
+			# positions and effort
+			gripper[1] = velocity[7]/1000000
+			gripper[2] = velocity[8]/1000000
+			#popup(gripper[1])
 		
 			sync()
 		end
