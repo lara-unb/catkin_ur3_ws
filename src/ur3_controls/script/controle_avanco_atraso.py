@@ -47,7 +47,7 @@ class MyControl:
             # Lei de controle para o controlador proposto
             # para todas as juntas 
             self.Reference_Velocity[idx] = (
-               0.958*self.Reference_Velocity_Old[idx]
+               0.48*self.Reference_Velocity_Old[idx]
              + 0.30067*self.Position_Erro[idx]
              - 0.2108*self.Position_Erro_Old[idx])
             ###########################################################

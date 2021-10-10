@@ -39,7 +39,7 @@ def unnamed():
   set_tool_voltage(24)
   
     thread rg2_thrd():
-		target_width = 40
+		target_width = 56.3
 		x = 0
 		while True:
 			target_force = 10
@@ -220,7 +220,7 @@ def unnamed():
 	while True:
 		#speedj([velocity[1]/4,velocity[1]/4,velocity[1]/4,velocity[1]/4,velocity[1]/4,velocity[1]/4], 50, 0.0001)
 		#speedj([0,0,0,0,0,0.0], 2, 0.0001)
-		speedj([velocity[1],velocity[2],velocity[3],velocity[4],velocity[5],velocity[6]], 50.0, 0.0001)	
+		speedj([velocity[1],velocity[2],velocity[3],velocity[4],velocity[5],velocity[6]], 5, 0.0001)	
 		#sync()
 	end
 end

@@ -16,16 +16,14 @@ csv_name:
 # type, choose the wave type)
 # and type of reference
 reference_type:
-  online: False
+  online: True
   type: 'sine' # if online is define as True type is ignored
 
 #choose which joints you want to activate
 activated_joints:
-  Base: False
-  Shoulder: False
-  Elbow: False
-  Wrist1: False
-  Wrist2: False
+  Base: True
+  Shoulder: True
+  Elbow: True
+  Wrist1: True
+  Wrist2: True
   Wrist3: True
-
-

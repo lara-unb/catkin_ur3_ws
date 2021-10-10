@@ -1,18 +1,28 @@
 #!/usr/bin/env python
+import os
+import rosnode
 import rospy
 import rospkg
 import numpy as np
 import csv
 from std_srvs.srv import SetBool, SetBoolResponse
+from std_srvs.srv import Empty, EmptyResponse
 from std_msgs.msg import Float64MultiArray
 from default_msgs.srv import SetFloat, SetFloatResponse
 from default_msgs.msg import JointPosition
 from sensor_msgs.msg import JointState
 
+from dynamic_reconfigure.server import Server
+from ur3_controls.cfg import Ur3ControlsConfig
 
 class MainNode:
 
     def __init__(self):
+
+        self.srv = Server(Ur3ControlsConfig, self.dyn_callback)
+
+        self.config_flag = False
+        self.record_bag_flag = False
         
         name_control = rospy.get_param('/ur3_controls/control/control_name')
         file_control = rospy.get_param('/ur3_controls/control/file_name')
@@ -48,6 +58,7 @@ class MainNode:
 
         self.target_pos = rospy.Subscriber("~" + name_control + "/target_position", JointPosition, self.target_position)
         rospy.Service("~start_" + name_control, SetBool, self.start_control)
+        # rospy.Service("/ur3/reset", Empty, self.reset_ur3)
 
         self.ref_vel_msg = Float64MultiArray()
         self.ref_pose_msg = Float64MultiArray()
@@ -62,6 +73,11 @@ class MainNode:
         self.max_vel = 1.0
         #####################################################################################
 
+    # def reset_ur3(self, req):
+    #     print("reset")
+    #     return EmptyResponse()
+
+
     def arm_initial_pose(self, msg):
 
         self.ref_pose_msg_on.data[0] =  msg.position[0]
@@ -74,8 +90,6 @@ class MainNode:
         self.ref_pose_msg_off = self.ref_pose_msg_on
 
         self.arm_initial_pose_sub.unregister()
-
-
 
 
     def arm_callback(self, msg):
@@ -130,10 +144,43 @@ class MainNode:
             self.stop_arm()
 
 
+    def dyn_callback(self, config, level):
+
+        self.config_flag = config.Dynamic_Reconfigure
+        
+        
+        if config.Dynamic_Reconfigure is True and self.reference_type["online"] is True:
+            
+            self.ref_pose_msg_on.data[0] = config.Base_position
+            self.ref_pose_msg_on.data[1] = config.Shoulder_position
+            self.ref_pose_msg_on.data[2] = config.Elbow_position
+            self.ref_pose_msg_on.data[3] = config.Wrist1_position
+            self.ref_pose_msg_on.data[4] = config.Wrist2_position
+            self.ref_pose_msg_on.data[5] = config.Wrist3_position
+
+        if config.Record_Bag == True:  
+            try:
+                if self.record_bag_flag == False:
+                    os.system('rosbag record -o /home/ur3/catkin_ur3_ws/bags/exp /ur3/arm /ur3/ref_pos /ur3/ref_vel /ur3/end_effector __name:=ros_bag_record &')
+                    rospy.loginfo("Starting record bag")
+                    self.record_bag_flag = True
+            except:
+                pass
+        if(("/ros_bag_record" in rosnode.get_node_names()) and config.Record_Bag == False):
+            try:
+                if self.record_bag_flag == True:
+                    os.system("rosnode kill /ros_bag_record")
+                    rospy.loginfo("Stop record bag")
+                    self.record_bag_flag = False
+            except:
+                pass
+        
+        return config
 
     def target_position(self, msg):
         
-        if self.start is True and self.reference_type["online"] is True:
+        if self.start is True and self.reference_type["online"] is True and self.config_flag is False:
+
             self.ref_pose_msg_on.data[0] = msg.Base
             self.ref_pose_msg_on.data[1] = msg.Shoulder
             self.ref_pose_msg_on.data[2] = msg.Elbow

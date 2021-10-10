@@ -123,7 +123,7 @@ class  Exp3():
             
             ek = self.qrk - self.qok
 
-            uk = 0.558*self.ukmenos1 + 0.30067*ek - 0.2108*self.ekmenos1
+            uk = 0.9*self.ukmenos1 + 0.3*ek - 0.12*self.ekmenos1
 
             if uk > 1.5:
                 uk = 1.5
