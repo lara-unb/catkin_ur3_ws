@@ -40,15 +40,15 @@ dh_exp = [   0       pi/2	 lexp(1)    0;
 
 dh_erro = dh_exp-dh_f
 centers = c
-centers(:,1) = [0;c(2,2);0]
-centers1 = [centers(1,5) centers(1,5); centers(2,5) 0 ;centers(3,5) centers(3,5)]
-hold on
-plot3(centers(1,:), centers(2,:), centers(3,:),'color',[0.9100    0.4100    0.1700],'LineWidth',2)
-plot3(centers1(1,:), centers1(2,:), centers1(3,:),'color',[0.9100    0.4100    0.1700],'LineWidth',2)
+centers(:,1) = [0;c(2,2);0];
+centers1 = [centers(1,5) centers(1,5); centers(2,5) 0 ;centers(3,5) centers(3,5)];
+hold on;
+plot3(centers(1,:), centers(2,:), centers(3,:),'color',[0.9100    0.4100    0.1700],'LineWidth',2);
+plot3(centers1(1,:), centers1(2,:), centers1(3,:),'color',[0.9100    0.4100    0.1700],'LineWidth',2);
 [x y] = meshgrid(-10:1:10);
 z = 0.*x + 0.*y + 0;
 surf(x,y,z);
 
-lgd = legend(lh, 'J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7');
+lgd = legend(lh, 'J1', 'J2', 'J3', 'J4', 'J5', 'J6');
 lgd.FontSize = 20;
 
