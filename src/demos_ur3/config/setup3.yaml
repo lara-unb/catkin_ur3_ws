@@ -5,7 +5,7 @@ csv_name:
   your_wave: None
 
 ref_type:
-  online: False
+  online: True
   type: 'sine'
 
 active_joints:

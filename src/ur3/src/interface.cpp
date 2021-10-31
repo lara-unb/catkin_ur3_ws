@@ -49,7 +49,7 @@ class Interface{
 		ros::Timer loop_timer_;
 		ros::Timer loop_check_connection_;
 
-		float norma_float = 1000000.0, target_width = 40.0, width_gripper;
+		float norma_float = 1000000.0, target_width = 56.3, width_gripper;
 		bool new_gripper_position = false;
 		int counter_gripper = 125;
 		sensor_msgs::JointState arm;
