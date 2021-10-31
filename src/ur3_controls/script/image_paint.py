@@ -98,7 +98,7 @@ class Paint:
                     pass
                 else:
                     try:
-                        cv2.circle(self.image, self.pts_j[0][i], 3, self.color_list[0], 5)
+                        cv2.circle(self.image, self.pts_j[0][i], 2, self.color_list[0], 2)
                     except:
                         pass
 
@@ -106,7 +106,7 @@ class Paint:
                     pass
                 else:
                     try:
-                        cv2.circle(self.image, self.pts_j[1][i], 2, self.color_list[1], 3)
+                        cv2.circle(self.image, self.pts_j[1][i], 2, self.color_list[1], 2)
                     except:
                         pass
 
@@ -114,7 +114,7 @@ class Paint:
                     pass
                 else:
                     try:
-                        cv2.circle(self.image, self.pts_j[2][i], 2, self.color_list[2], 3)
+                        cv2.circle(self.image, self.pts_j[2][i], 2, self.color_list[2], 2)
                     except:
                         pass
 
@@ -122,7 +122,7 @@ class Paint:
                     pass
                 else:
                     try:
-                        cv2.circle(self.image, self.pts_j[3][i], 2, self.color_list[3], 3)
+                        cv2.circle(self.image, self.pts_j[3][i], 2, self.color_list[3], 2)
                     except:
                         pass
 
@@ -130,15 +130,15 @@ class Paint:
                     pass
                 else:
                     try:
-                        cv2.circle(self.image, self.pts_j[4][i], 2, self.color_list[4], 3)
+                        cv2.circle(self.image, self.pts_j[4][i], 2, self.color_list[4], 2)
                     except:
                         pass
 
-                if self.pts_j[3] is None:
+                if self.pts_j[5] is None:
                     pass
                 else:
                     try:
-                        cv2.circle(self.image, self.pts_j[5][i], 2, self.color_list[5], 5)
+                        cv2.circle(self.image, self.pts_j[5][i], 2, self.color_list[5], 2)
                     except:
                         pass
 
