@@ -10,9 +10,13 @@ O UR3 , Figura 1 ,  é um robô colaborativo de mesa que possui carga útil de 3
 
 
 ## interface de comunicação 
-![UR3](docs/imgs/my_control.png)
-<center>Diagrama de comunicação</center>
 
+A Interface de Comunicação nada mas é do que um nó ROS, escrito em C++, que visa o desacoplamento entre a aplicação, que pode ser um controlador ou uma aplicação que envie trajetórias predefinidas, e o robô em si e tem a finalidade de funcionar como um intermediário entre uma aplicação ROS e o Software do fabricante.
+
+![UR3](docs/imgs/my_control.png)
+<center>Figura 2: Diagrama de comunicação</center>
+
+## descrição do blocos da Figura 2
 -   Interface de Comunicação
 
     -   nós
