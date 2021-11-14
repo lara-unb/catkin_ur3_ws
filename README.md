@@ -9,7 +9,6 @@ O UR3 , Figura 1 ,  é um robô colaborativo de mesa que possui carga útil de 3
 
 
 
-
 ## interface de comunicação 
 ![UR3](docs/imgs/my_control.png)
 <center>Diagrama de comunicação</center>
