@@ -1,8 +1,8 @@
 # catkin_ur3_ws
-Este repositôrio é dedicado a armazenar códigos e documentação a respeito do manipulador UR3 presente no LARA.
+Este repositório é dedicado a armazenar códigos e documentação a respeito do manipulador UR3 presente no LARA.
 
 ## UR3
-O UR3 , Figura 1 ,  é um robô colaborativo de mesa que possui carga útil de 3kg. Seu tamanho reduzido o torna adequado para situações onde o espaço de trabalho é limitado. Com seu giro infinito na junta final, diversas atividades podem ser realizadas com a garra fixadano conector da ferramenta do robô, o que o torna muito hábil.  
+O UR3 , Figura 1 ,  é um robô colaborativo de mesa que possui carga útil de 3kg. Seu tamanho reduzido o torna adequado para situações onde o espaço de trabalho é limitado. Com seu giro infinito na junta final, diversas atividades podem ser realizadas com a garra fixada no conector da ferramenta do robô, o que o torna muito hábil.  
 
 ![UR3](docs/imgs/ur3.png)
 <center>Figura 1: UR3</center>
@@ -112,5 +112,5 @@ A Interface de Comunicação nada mas é do que um nó ROS, escrito em C++, que 
             -   mensagem ROS: std\_srvs/SetBool
 
 # Experimentos
-Para mais detalhes sobre o funcionamento do UR3 e a Interface de Comunicação, consulte o trabalho de graduação do aluno Rafael R. Matos na pasta docs desse repositório. Para realizar alguns experimentos com o UR3 consute a documentação de experimentos na pasta docs desse repositório.
+Para mais detalhes sobre o funcionamento do UR3 e a Interface de Comunicação, consulte o trabalho de graduação do aluno Rafael R. Matos na pasta docs desse repositório. Para realizar alguns experimentos com o UR3 consulte a documentação de experimentos na pasta docs desse repositório. Na pasta docs, também há um projeto de pesquisa (pibit) que contém uma primeira versão da Interface de Comunicação, que está desatualizada, mas vale a pena para entender como foram feitas as primeiras propostas da Interface.
 
